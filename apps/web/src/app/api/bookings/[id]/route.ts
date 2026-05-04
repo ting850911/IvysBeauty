@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, BookingStatus } from "@ivysbeauty/database";
+import { prisma } from "@ivysbeauty/database";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     // 4. 更新狀態
     const updatedBooking = await prisma.booking.update({
       where: { id },
-      data: { status: status as BookingStatus },
+      data: { status },
     });
 
     return NextResponse.json({ success: true, data: updatedBooking });
