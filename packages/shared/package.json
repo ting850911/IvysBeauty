@@ -8,10 +8,11 @@
     "build": "tsc"
   },
   "dependencies": {
-    "zod": "^3.23.8",
-    "@ivysbeauty/database": "workspace:*"
+    "@ivysbeauty/database": "workspace:*",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "typescript": "^5.0.0"
   }
 }
