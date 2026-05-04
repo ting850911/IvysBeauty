@@ -9,6 +9,7 @@
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "postinstall": "pnpm --filter @ivysbeauty/database build"
   }
 }

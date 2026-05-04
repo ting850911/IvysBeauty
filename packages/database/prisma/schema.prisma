@@ -3,8 +3,9 @@ datasource db {
   url      = env("DATABASE_URL")  
 }
 
-generator client {  
-  provider = "prisma-client-js"  
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 // 1. 全域店家資訊 (Store Info)
