@@ -1,4 +1,5 @@
 import Image from "next/image";
+import React from "react";
 
 interface PortfolioCardProps {
   item: {
@@ -19,7 +20,7 @@ export function PortfolioCard({ item, index }: PortfolioCardProps) {
   return (
     <figure
       className="group relative overflow-hidden rounded-[2rem] bg-surface shadow-soft transition-all duration-500 hover:shadow-elevated animate-fade-up border border-border/30 delay-[var(--delay)]"
-      style={{ '--delay': `${index * 60}ms` } as any}
+      style={{ '--delay': `${index * 60}ms` } as React.CSSProperties}
     >
       <div className="aspect-[4/5] overflow-hidden bg-surface">
         <Image

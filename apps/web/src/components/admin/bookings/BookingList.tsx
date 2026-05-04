@@ -2,10 +2,11 @@
 
 import { format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
+import { BookingStatus } from "@ivysbeauty/shared";
 
 export interface AdminBooking {
   id: string;
-  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "DONE" | "MISSED";
+  status: BookingStatus;
   startTime: string;
   location: { name: string };
   service: { name: string; price: number };
@@ -20,7 +21,7 @@ export interface AdminBooking {
 
 interface BookingListProps {
   bookings: AdminBooking[];
-  onStatusChange: (id: string, newStatus: string) => void;
+  onStatusChange: (id: string, newStatus: BookingStatus) => void;
   isLoadingAction: string | null;
 }
 
@@ -69,7 +70,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                   aria-label="更新預約狀態"
                   className="w-full bg-transparent border border-border/60 rounded-full px-3 py-1 appearance-none"
                   value={booking.status}
-                  onChange={(e) => onStatusChange(booking.id, e.target.value)}
+                  onChange={(e) => onStatusChange(booking.id, e.target.value as BookingStatus)}
                   disabled={isLoadingAction === booking.id}
                   style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
                 >
@@ -146,7 +147,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                             aria-label="更新預約狀態"
                             className="bg-transparent border border-border/60 hover:border-foreground/30 rounded-full px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer text-center w-24"
                             value={booking.status}
-                            onChange={(e) => onStatusChange(booking.id, e.target.value)}
+                            onChange={(e) => onStatusChange(booking.id, e.target.value as BookingStatus)}
                             disabled={isLoadingAction === booking.id}
                             style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', backgroundSize: '12px' }}
                           >

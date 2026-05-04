@@ -1,3 +1,15 @@
+export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "DONE" | "MISSED";
+
+export interface DailyHour {
+  dayOfWeek: number;
+  isOpen: boolean;
+  openTime: string;
+  closeTime: string;
+  hasBreak?: boolean;
+  breakStart?: string;
+  breakEnd?: string;
+}
+
 export interface User {
   id?: string;
   email: string;
@@ -12,6 +24,8 @@ export interface Location {
   name: string;
   address: string;
   phone: string;
+  openingHours?: DailyHour[];
+  vacationDays?: Date[];
 }
 
 export interface Service {

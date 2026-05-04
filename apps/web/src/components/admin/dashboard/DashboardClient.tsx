@@ -6,6 +6,7 @@ import { isToday, isAfter, isBefore, addDays, endOfDay, parseISO, format } from 
 import { toDate, formatInTimeZone } from "date-fns-tz";
 import { zhTW } from "date-fns/locale";
 import { useRouter } from "next/navigation";
+import { BookingStatus } from "@ivysbeauty/shared";
 
 interface Props {
   initialBookings: AdminBooking[];
@@ -28,7 +29,7 @@ export function DashboardClient({ initialBookings }: Props) {
 
   const router = useRouter();
 
-  const handleStatusChange = async (id: string, newStatus: string) => {
+  const handleStatusChange = async (id: string, newStatus: BookingStatus) => {
     if (!confirm(`確定要將此訂單狀態更改為 ${newStatus} 嗎？`)) return;
 
     try {
@@ -46,7 +47,7 @@ export function DashboardClient({ initialBookings }: Props) {
 
       setBookings((prev) =>
         prev.map((booking) =>
-          booking.id === id ? { ...booking, status: newStatus as any } : booking
+          booking.id === id ? { ...booking, status: newStatus } : booking
         )
       );
 

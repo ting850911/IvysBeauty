@@ -1,5 +1,5 @@
 import { prisma } from "@ivysbeauty/database";
-import { SchedulesClient } from "@/components/admin/schedules/SchedulesClient";
+import { SchedulesClient, ScheduleLocation } from "@/components/admin/schedules/SchedulesClient";
 
 export default async function AdminSchedulesPage() {
 
@@ -7,14 +7,14 @@ export default async function AdminSchedulesPage() {
     orderBy: { name: "asc" },
   });
 
-  const safeLocations = locations.map((loc: any) => {
+  const safeLocations: ScheduleLocation[] = locations.map((loc) => {
     return {
       id: loc.id,
       name: loc.name,
-      openingHours: loc.openingHours ? JSON.parse(JSON.stringify(loc.openingHours)) : null,
-      vacationDays: loc.vacationDays.map((d: any) => d.toISOString()),
+      openingHours: loc.openingHours ? (loc.openingHours as any) : null,
+      vacationDays: loc.vacationDays.map((d) => d.toISOString()),
     };
   });
 
-  return <SchedulesClient initialLocations={safeLocations as any} />;
+  return <SchedulesClient initialLocations={safeLocations} />;
 }

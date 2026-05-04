@@ -13,20 +13,12 @@ import {
   startOfDay
 } from "date-fns";
 import { formatInTimeZone, toDate } from "date-fns-tz";
+import { DailyHour } from "@ivysbeauty/shared";
 
 const TIME_ZONE = "Asia/Taipei";
 const SLOT_DURATION = 30; // minutes
 const MIN_LEAD_TIME_HOURS = 2; // Lead time for booking
 
-interface DailyHour {
-  dayOfWeek: number;
-  isOpen: boolean;
-  openTime: string;
-  closeTime: string;
-  hasBreak?: boolean;
-  breakStart?: string;
-  breakEnd?: string;
-}
 
 export async function getMonthAvailability(
   locationId: string,
@@ -44,7 +36,7 @@ export async function getMonthAvailability(
     throw new Error("Location or Service not found");
   }
 
-  const openingHours = (location.openingHours as any) as DailyHour[];
+  const openingHours = (location.openingHours as unknown) as DailyHour[] || [];
   const vacationDays = location.vacationDays.map(d => formatInTimeZone(d, TIME_ZONE, "yyyy-MM-dd"));
 
   // 2. Define Time Range

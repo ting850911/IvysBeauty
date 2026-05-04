@@ -5,22 +5,16 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Loader2, Store, ChevronDown } from "lucide-react";
+import { DailyHour as SharedDailyHour } from "@ivysbeauty/shared";
 
-export interface DailyHour {
-  dayOfWeek: number;
-  isOpen: boolean;
-  openTime: string;
-  closeTime: string;
-  hasBreak?: boolean;
-  breakStart?: string;
-  breakEnd?: string;
+export interface DailyHour extends SharedDailyHour {
   label: string;
 }
 
 export interface ScheduleLocation {
   id: string;
   name: string;
-  openingHours: any;
+  openingHours: DailyHour[] | null;
   vacationDays: string[];
 }
 
