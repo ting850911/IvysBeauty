@@ -1,6 +1,6 @@
 import { prisma } from "@ivysbeauty/database";
 import { SettingsClient } from "@/components/admin/settings/SettingsClient";
-import type { AdminLocation, AdminService, AdminStoreInfo } from "@/components/admin/settings/SettingsClient";
+import type { AdminLocation, AdminService, AdminStoreInfo } from "@/components/admin/settings/types";
 
 export default async function AdminSettingsPage() {
   const [locations, storeInfoData, services] = await Promise.all([
