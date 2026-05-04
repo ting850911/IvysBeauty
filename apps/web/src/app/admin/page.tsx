@@ -13,7 +13,7 @@ export default async function AdminDashboardPage() {
     },
   });
 
-  const safeBookings: AdminBooking[] = bookings.map((booking) => {
+  const safeBookings: AdminBooking[] = bookings.map((booking: any) => {
     // 處理 decrypt 錯誤，當不小心用明文存入資料庫時能平穩回傳原字串
     const safeDecrypt = (val: string | null) => {
       try {
