@@ -4,8 +4,9 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated"
+  provider      = "prisma-client-js"
+  output        = "../src/generated"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 // 1. 全域店家資訊 (Store Info)
