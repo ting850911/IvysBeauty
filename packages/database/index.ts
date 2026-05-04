@@ -1,4 +1,4 @@
-import { PrismaClient } from './src/generated';
+import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
   return new PrismaClient();
@@ -17,5 +17,5 @@ export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // Re-export 所有 Type 定義檔給其他套件（例如 Shared）使用
-export * from './src/generated';
+export * from '@prisma/client';
 export * from './src/pii-encryption';
