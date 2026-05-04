@@ -21,7 +21,7 @@ export default async function AdminPortfolioPage() {
     select: { id: true, name: true }
   });
 
-  const safePortfolios: AdminPortfolio[] = portfolios.map((p) => ({
+  const safePortfolios: AdminPortfolio[] = portfolios.map((p: any) => ({
     id: p.id,
     title: p.title,
     imageUrls: p.imageUrls,
@@ -33,12 +33,12 @@ export default async function AdminPortfolioPage() {
     createdAt: p.createdAt.toISOString(),
   }));
 
-  const locationOptions: OptionItem[] = locations.map(loc => ({
+  const locationOptions: OptionItem[] = locations.map((loc: any) => ({
     id: loc.id,
     name: loc.name,
   }));
 
-  const serviceOptions: OptionItem[] = services.map(srv => ({
+  const serviceOptions: OptionItem[] = services.map((srv: any) => ({
     id: srv.id,
     name: srv.name,
   }));

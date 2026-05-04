@@ -30,16 +30,16 @@ export default async function AdminSettingsPage() {
     imageUrls: loc.imageUrls,
     isPublished: loc.isPublished,
     openingHours: loc.openingHours ? JSON.parse(JSON.stringify(loc.openingHours)) : null,
-    vacationDays: loc.vacationDays.map(d => d.toISOString()),
+    vacationDays: loc.vacationDays.map((d: any) => d.toISOString()),
   }));
 
-  const safeServices: AdminService[] = services.map(srv => ({
+  const safeServices: AdminService[] = services.map((srv: any) => ({
     id: srv.id,
     name: srv.name,
     price: srv.price,
     duration: srv.duration,
     isPublished: srv.isPublished,
-    locations: srv.locations.map(loc => ({
+    locations: srv.locations.map((loc: any) => ({
       id: loc.id,
       name: loc.name
     }))

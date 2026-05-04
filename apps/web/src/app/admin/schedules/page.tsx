@@ -7,12 +7,12 @@ export default async function AdminSchedulesPage() {
     orderBy: { name: "asc" },
   });
 
-  const safeLocations = locations.map((loc) => {
+  const safeLocations = locations.map((loc: any) => {
     return {
       id: loc.id,
       name: loc.name,
       openingHours: loc.openingHours ? JSON.parse(JSON.stringify(loc.openingHours)) : null,
-      vacationDays: loc.vacationDays.map((d) => d.toISOString()),
+      vacationDays: loc.vacationDays.map((d: any) => d.toISOString()),
     };
   });
 
