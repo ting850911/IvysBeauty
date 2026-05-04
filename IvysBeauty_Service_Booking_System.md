@@ -214,11 +214,42 @@ enum Gender {
 
 ---
 
-## **4\. AI 開發執行令 (Prompt Guidance)**
+## **5\. 環境配置與部署規範 (Infrastructure & Config)**
+
+### **基礎設施 (Infrastructure)**
+*   **主機部署**：首選 Vercel (Serverless)，並提供 `Dockerfile` 確保具備遷移至 VPS (Docker) 的能力。
+*   **資料庫**：選用 **Neon (PostgreSQL)**。利用其 Serverless 特性支援自動休眠與分支 (Branching) 功能。
+*   **圖片存儲**：選用 **Cloudinary**。負責所有作品集照片、店面照片與轉帳證明的存儲與 CDN 加速。
+
+### **環境變數清單 (Environment Variables)**
+*   `DATABASE_URL`: PostgreSQL 連線字串 (Neon)。
+*   `JWT_SECRET`: 用於使用者身份驗證加密的私鑰。
+*   `CLOUDINARY_CLOUD_NAME / API_KEY / API_SECRET`: Cloudinary 服務憑證。
+*   `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`: 圖片上傳預設參數。
+*   `PII_ENCRYPTION_KEY`: 針對姓名、電話等個人資訊的 AES-256 加密金鑰。
+
+### **安全與資料保護 (Security)**
+*   **資料去識別化**：所有 PII (個人識別資訊) 欄位（如姓名、電話、生日）在資料庫中均需以加密格式存儲。
+*   **身分驗證 (Auth)**：
+    *   Admin：1 天有效期的 JWT，嚴格限制存取 `/admin` 路徑。
+    *   Member：30 天有效期的 JWT，僅能存取個人預約紀錄。
+*   **CORS/防護**：限制 API 僅能從網域內存取。
+
+### **CI/CD 與 擴展性**
+*   **自動化流程**：
+    *   Git 推送至 `main` 分支時自動觸發 Vercel 部署。
+    *   部署前自動執行 `prisma generate` 以同步型別。
+*   **水平擴展**：
+    *   應用程式為 Stateless（無狀態）設計，支援多實例運行。
+    *   資料庫使用 Neon 支援自動擴容。
+
+---
+
+## **6\. AI 開發執行令 (Prompt Guidance)**
 
 請依據此 Blueprint 實作 Next.js 14 全端應用。
 
 1\. UI 實作需遵循奶茶色系 (\#FBF9F4, \#F6EEE1, \#DAD5CA)、圓潤邊框與高留白設計。  
 2\. 後端 API available-slots 需根據 locationId、serviceId 與 BookingStatus 進行精確的時間重疊檢查。  
 3\. Portfolio 功能需實作多維度篩選 (Joint Query with Location and Service)。
-
+4\. 所有涉及個人隱私的欄位讀寫，必須經過 `packages/database` 中的加密/解密層。

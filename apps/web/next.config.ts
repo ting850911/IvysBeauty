@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     "@ivysbeauty/ui",
     "@ivysbeauty/core-logic"
   ],
+  output: "standalone",
 };
 
 export default nextConfig;
