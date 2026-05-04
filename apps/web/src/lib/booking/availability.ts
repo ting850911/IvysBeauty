@@ -93,7 +93,7 @@ export async function getMonthAvailability(
     }
 
     // Generate slots
-    const daySlots = [];
+    const daySlots: { time: string; startTime: string; endTime: string }[] = [];
     const openTimeStr = `${dateStr}T${dayConfig.openTime}:00`;
     const closeTimeStr = `${dateStr}T${dayConfig.closeTime}:00`;
     

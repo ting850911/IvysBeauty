@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "main": "index.ts",
+  "scripts": {
+    "build": "prisma generate"
+  },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },

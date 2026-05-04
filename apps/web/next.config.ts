@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  transpilePackages: [
+    "@ivysbeauty/shared",
+    "@ivysbeauty/database",
+    "@ivysbeauty/ui",
+    "@ivysbeauty/core-logic"
+  ],
 };
 
 export default nextConfig;
