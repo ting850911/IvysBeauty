@@ -2,7 +2,9 @@ import { prisma, decryptField } from "@ivysbeauty/database";
 import { DashboardClient } from "@/components/admin/dashboard/DashboardClient";
 import { AdminBooking } from "@/components/admin/bookings/BookingList";
 
-// 強制為 Server Component
+// 強制為 Server Component 且不進行建置時預渲染
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboardPage() {
   const bookings = await prisma.booking.findMany({
     orderBy: { startTime: 'asc' },

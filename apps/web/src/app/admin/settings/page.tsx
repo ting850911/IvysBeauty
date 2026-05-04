@@ -2,6 +2,8 @@ import { prisma } from "@ivysbeauty/database";
 import { SettingsClient } from "@/components/admin/settings/SettingsClient";
 import type { AdminLocation, AdminService, AdminStoreInfo } from "@/components/admin/settings/types";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminSettingsPage() {
   const [locations, storeInfoData, services] = await Promise.all([
     prisma.location.findMany({ orderBy: { name: 'asc' } }),

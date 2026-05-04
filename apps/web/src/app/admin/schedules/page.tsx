@@ -1,6 +1,8 @@
 import { prisma } from "@ivysbeauty/database";
 import { SchedulesClient, ScheduleLocation } from "@/components/admin/schedules/SchedulesClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSchedulesPage() {
 
   const locations = await prisma.location.findMany({

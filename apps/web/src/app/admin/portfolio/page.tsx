@@ -2,6 +2,8 @@ import { prisma } from "@ivysbeauty/database";
 import { PortfolioClient } from "@/components/admin/portfolio/PortfolioClient";
 import type { AdminPortfolio, OptionItem } from "@/components/admin/portfolio/PortfolioClient";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminPortfolioPage() {
   const portfolios = await prisma.portfolio.findMany({
     orderBy: { createdAt: 'desc' },
