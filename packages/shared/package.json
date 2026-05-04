@@ -1,0 +1,17 @@
+{
+  "name": "@ivysbeauty/shared",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@ivysbeauty/database": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,87 @@
+[
+  {
+    "task": "setup_prisma_schema",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Implement the 5 core models: Location, Service, User, Booking, Portfolio",
+      "Include Enums: Role(OWNER, MEMBER), BookingStatus(PENDING, CONFIRMED, CANCELLED), Gender",
+      "Ensure relations are established correctly (e.g. Booking to Location, Service, User)"
+    ],
+    "acceptance": [
+      "Prisma client generates successfully",
+      "All fields described in Blueprint are present"
+    ]
+  },
+  {
+    "task": "setup_design_tokens",
+    "owner": "UI Design System Agent",
+    "rules": [
+      "Configure Tailwind CSS to include brand colors: background #FBF9F4, surface #F6EEE1, border #DAD5CA, accent required",
+      "Configure radius token: rounded-xl",
+      "Configure spacing: high whitespace",
+      "Base font: Sans-serif (light weight)"
+    ],
+    "acceptance": [
+      "tailwind.config.ts contains the specified tokens",
+      "No inline styles are required to achieve the brand look"
+    ]
+  },
+  {
+    "task": "implement_available_slots_api",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Receive locationId, serviceId, and target date as input",
+      "Must exclude CONFIRMED bookings",
+      "Must exclude non-expired PENDING bookings",
+      "Respect the duration defined by the Service model",
+      "Must enforce: a.start < b.end && b.start < a.end for overlap check"
+    ],
+    "acceptance": [
+      "API successfully returns free time slots",
+      "Overlapping bookings are hidden",
+      "Pending unexpired bookings block the slot properly"
+    ]
+  },
+  {
+    "task": "implement_booking_stepper_ui",
+    "owner": "Frontend Flow Agent",
+    "rules": [
+      "Step 1: Select location",
+      "Step 2: Select service (filtered by selected location)",
+      "Step 3: Select time (polls implement_available_slots_api)",
+      "Step 4: Confirm and upload payment proof",
+      "Must handle async loading states cleanly between steps",
+      "Implement using components from UI System"
+    ],
+    "acceptance": [
+      "Stepper flow validates each step before proceeding",
+      "API payload is successfully assembled and sent at the final step"
+    ]
+  },
+  {
+    "task": "implement_pending_booking_cron",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Run every 10 minutes",
+      "Find PENDING bookings where expiredAt < now()",
+      "Release the slots by changing status to CANCELLED"
+    ],
+    "acceptance": [
+      "Cron job identifies and cancels expired pendings accurately",
+      "Freed slots become immediately available in the available-slots API"
+    ]
+  },
+  {
+    "task": "implement_portfolio_gallery",
+    "owner": "Frontend Flow Agent",
+    "rules": [
+      "Implement multi-dimensional filter (Time, Location, Service, Gender)",
+      "UI must be clean, high-whitespace, respecting #F6EEE1 surface colors",
+      "Perform joint query fetch requests"
+    ],
+    "acceptance": [
+      "Gallery correctly filters results based on selected parameters",
+      "UI meets visual brand guidelines"
+    ]
+  }
+]

@@ -1,0 +1,121 @@
+datasource db {  
+  provider = "postgresql"  
+  url      = env("DATABASE_URL")  
+}
+
+generator client {  
+  provider = "prisma-client-js"  
+}
+
+// 1. 全域店家資訊 (Store Info)
+model StoreInfo {
+  id          String   @id @default("global")
+  phone       String?  // 主要聯絡手機
+  line        String?  // Line 連結或 ID
+  instagram   String?  // Instagram 連結
+  facebook    String?  // Facebook 連結
+  bankCode    String?  // 銀行代碼
+  bankName    String?  // 銀行名稱
+  bankAccount String?  // 匯款帳號
+  bankAccountName String? // 帳戶名稱
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+// 2. 店家與地點資訊 (Locations)
+model Location {  
+  id             String      @id @default(cuid())  
+  name           String  
+  address        String  
+  imageUrls      String[]    @default([]) // 店內照片(多張)
+  isPublished    Boolean     @default(true) // 是否上架/發佈
+  openingHours   Json?       // 營業時間 (包含 isOpen, openTime, closeTime, hasBreak, breakStart, breakEnd)
+  vacationDays   DateTime[]  // 休假日
+  bookings       Booking[]  
+  services       Service[]  
+  portfolios     Portfolio[]  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @default(now()) @updatedAt
+}
+
+// 2. 服務項目  
+model Service {  
+  id          String      @id @default(cuid())  
+  name        String  
+  price       Int  
+  duration    Int         // 服務耗時 (分鐘)
+  isPublished Boolean     @default(true)     // 上架
+  locations   Location[]  
+  bookings    Booking[]  
+  portfolios  Portfolio[]  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
+}
+
+// 3. 會員與使用者  
+model User {  
+  id            String    @id @default(cuid())  
+  name          String?  
+  email         String?   @unique  
+  passwordHash  String?
+  phone         String?  
+  birthday      String?  
+  role          Role      @default(MEMBER)  
+  bookings      Booking[]  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+}
+
+enum Role {  
+  OWNER  
+  MEMBER  
+}
+
+// 4. 預約紀錄 (核心邏輯)  
+model Booking {  
+  id             String        @id @default(cuid())  
+  status         BookingStatus @default(PENDING)  
+  startTime      DateTime  
+  endTime        DateTime  
+  expiredAt      DateTime      // 輔助欄位：PENDING 狀態的付款期限
+  locationId     String  
+  location       Location      @relation(fields: [locationId], references: [id])  
+  serviceId      String  
+  service        Service       @relation(fields: [serviceId], references: [id])  
+  customerId     String  
+  customer       User          @relation(fields: [customerId], references: [id])  
+  paymentProof   String?       // 上傳的轉帳證明圖片網址
+  notes          String?  
+  createdAt      DateTime      @default(now())  
+  updatedAt      DateTime      @default(now()) @updatedAt
+}
+
+enum BookingStatus {  
+  PENDING
+  CONFIRMED
+  CANCELLED
+  DONE
+  MISSED
+}
+
+// 5. 作品集 (多維度篩選)  
+model Portfolio {  
+  id          String    @id @default(cuid())  
+  title       String    @default("未命名作品")
+  imageUrls   String[]  @default([])
+  description String?
+  tags        String[]  @default([])
+  gender      Gender    @default(FEMALE)
+  locationId  String?  
+  location    Location? @relation(fields: [locationId], references: [id])
+  serviceId   String?  
+  service     Service?  @relation(fields: [serviceId], references: [id])
+  createdAt   DateTime  @default(now())  
+  updatedAt   DateTime  @default(now()) @updatedAt
+}
+
+enum Gender {  
+  MALE  
+  FEMALE  
+  UNISEX  
+}

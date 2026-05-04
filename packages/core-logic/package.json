@@ -1,0 +1,14 @@
+{
+  "name": "@ivysbeauty/core-logic",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@ivysbeauty/database": "workspace:*",
+    "@ivysbeauty/shared": "workspace:*",
+    "date-fns": "^3.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

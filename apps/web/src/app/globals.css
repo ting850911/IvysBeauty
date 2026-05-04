@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+
+/* 讀取 UI Design System 定義的 Tokens (Colors, Radius, Spacing) */
+@config "../../../../packages/ui/tailwind.config.ts";

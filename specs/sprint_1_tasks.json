@@ -1,0 +1,76 @@
+[
+  {
+    "task": "implement_available_slots_api",
+    "owner": "Backend Logic Agent",
+    "status": "TODO",
+    "rules": [
+      "必須遵從 SKILL: [booking-overlap-checker]",
+      "在 `packages/core-logic` 或 Next API routes 建立端點",
+      "計算邏輯：排除 `CONFIRMED` 與「未逾期的 `PENDING`」",
+      "重疊公式為：`a.start < b.end && b.start < a.end`",
+      "必須根據 Service 所需的 `duration` 計算該時段是否容納得下"
+    ],
+    "acceptance": [
+      "傳入 locationId 與 serviceId 以及目標時間，API 能準確傳回可預約的時段 (Date物件陣列)",
+      "不會產生與現有表單重疊的錯誤選項"
+    ]
+  },
+  {
+    "task": "setup_ui_components_with_shadcn",
+    "owner": "UI Design System Agent + Frontend Flow Agent",
+    "status": "TODO",
+    "rules": [
+      "強制讀取 SKILL: [shadcn] 與 [frontend-design]",
+      "在工作區建立共用元件庫 (Button, Calendar, Select, Card, Stepper)",
+      "這批元件所有的設計必須強迫覆蓋為我們方才訂立的 Tailwind 奶茶Tokens (`bg-surface`, `rounded-xl`)",
+      "拒絕預設的深灰/黑白冷硬風格"
+    ],
+    "acceptance": [
+      "基礎互動元件（特別是月曆與按鈕）可直接提供前端頁面引入",
+      "UI 外觀已具備自然光感與溫暖質感"
+    ]
+  },
+  {
+    "task": "implement_booking_stepper_flow",
+    "owner": "Frontend Flow Agent",
+    "status": "TODO",
+    "rules": [
+      "強制讀取 SKILL: [multi-step-form-builder] 與 [next-best-practices]",
+      "實作四階段流程：1.地點 → 2.項目(連動地點) → 3.時段(連動API) → 4.付款上傳",
+      "狀態必須獨立管理，不可因返回上一步而丟失前面的資料",
+      "呼叫 API 時要有優雅的非同步載入狀態 (Pending States)"
+    ],
+    "acceptance": [
+      "前端使用者能毫無阻礙地走完預約流程",
+      "表單資料能在最終步正確存入資料庫，並將狀態設為 PENDING"
+    ]
+  },
+  {
+    "task": "implement_portfolio_gallery",
+    "owner": "Frontend Flow Agent",
+    "status": "TODO",
+    "rules": [
+      "實作首頁的作品牆",
+      "實作四維度篩選器 (Time, Location, Service, Gender)",
+      "使用 Next.js 的 URL 參數或最佳實踐來進行篩選，以利做成 Server Components 的快取",
+      "遵循高留白與俐落排版"
+    ],
+    "acceptance": [
+      "作品集能即時根據篩選器更新",
+      "Layout 看起來具備現代專業感"
+    ]
+  },
+  {
+    "task": "implement_pending_expiration_cron",
+    "owner": "Backend Logic Agent",
+    "status": "TODO",
+    "rules": [
+      "建立定時任務 (每 10 分鐘檢查一次)",
+      "尋找狀態為 `PENDING` 且 `expiredAt` 早於 `now()` 的 Booking",
+      "將其刪除或改為 `CANCELLED`，讓系統釋出被卡住的時段"
+    ],
+    "acceptance": [
+      "排程一旦執行，逾期的時段就會再次進入 `available_slots` 可以被預約"
+    ]
+  }
+]

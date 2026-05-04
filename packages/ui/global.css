@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@reference "tailwindcss";
+
+/* Ivy's Beauty — Milk Tea Design System
+   All colors MUST be HSL. Tokens only. No raw hex in components.
+*/
+
+@layer base {
+  :root {
+    /* Milk tea palette */
+    --background: 40 47% 97%;
+    /* #FBF9F4 */
+    --foreground: 30 12% 18%;
+    /* warm deep brown for text */
+
+    --surface: 35 47% 92%;
+    /* #F6EEE1 - section / surface */
+    --surface-foreground: 30 14% 22%;
+
+    --card: 40 47% 97%;
+    --card-foreground: 30 12% 18%;
+
+    --popover: 40 47% 97%;
+    --popover-foreground: 30 12% 18%;
+
+    /* Accent: warm caramel — high contrast against milk tea */
+    --primary: 22 55% 38%;
+    --primary-foreground: 40 47% 97%;
+
+    --secondary: 35 47% 92%;
+    --secondary-foreground: 30 14% 22%;
+
+    --muted: 36 25% 88%;
+    --muted-foreground: 0 0% 24%;
+
+    --accent: 22 55% 38%;
+    --accent-foreground: 40 47% 97%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 40 47% 97%;
+
+    /* Soft taupe border (#DAD5CA) */
+    --border: 36 16% 82%;
+    --input: 36 16% 82%;
+    --ring: 22 55% 38%;
+
+    --radius: 5rem;
+
+    /* Shadows — soft, warm */
+    --shadow-soft: 0 1px 2px hsl(30 20% 30% / 0.04), 0 8px 24px -12px hsl(30 30% 25% / 0.08);
+    --shadow-elevated: 0 2px 4px hsl(30 20% 30% / 0.06), 0 24px 48px -20px hsl(30 30% 25% / 0.18);
+
+    /* Gradients */
+    --gradient-warm: linear-gradient(180deg, hsl(40 47% 97%) 0%, hsl(35 47% 92%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(35 47% 92% / 0.6) 0%, hsl(40 47% 97% / 0.2) 100%);
+
+    /* Motion */
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+    --sidebar-background: 40 47% 97%;
+    --sidebar-foreground: 30 12% 18%;
+    --sidebar-primary: 22 55% 38%;
+    --sidebar-primary-foreground: 40 47% 97%;
+    --sidebar-accent: 35 47% 92%;
+    --sidebar-accent-foreground: 30 14% 22%;
+    --sidebar-border: 36 16% 82%;
+    --sidebar-ring: 22 55% 38%;
+  }
+}
+
+@layer base {
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Cormorant Garamond';
+  }
+
+  body {
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: revert;
+    color: hsl(var(--foreground));
+  }
+
+  h1 {
+    font-size: var(--text-5xl);
+
+    @media (min-width: 768px) {
+      @apply text-7xl;
+    }
+
+    @media screen and (max-width: 768px) {
+      @apply text-4xl;
+    }
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+
+    @media (min-width: 768px) {
+      @apply text-6xl;
+    }
+
+    @media screen and (max-width: 768px) {
+      @apply text-3xl;
+    }
+  }
+
+  h3 {
+    font-size: var(--text-3xl);
+
+    @media (min-width: 768px) {
+      @apply text-5xl;
+    }
+
+    @media screen and (max-width: 768px) {
+      @apply text-2xl;
+    }
+  }
+
+  h4 {
+    font-size: var(--text-2xl);
+
+    @media screen and (max-width: 768px) {
+      @apply text-4xl;
+    }
+
+    @media screen and (max-width: 768px) {
+      @apply text-xl;
+    }
+  }
+
+  h5 {
+    font-size: var(--text-xl);
+  }
+
+  h6 {
+    font-size: var(--text-lg);
+  }
+
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+@utility text-eyebrow {
+  @apply text-xs uppercase font-bold drop-shadow-sm;
+  color: hsl(var(--primary));
+  letter-spacing: 0.4em;
+}
