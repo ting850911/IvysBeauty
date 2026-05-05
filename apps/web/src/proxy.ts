@@ -53,12 +53,21 @@ export async function proxy(req: NextRequest) {
   };
 
   // 1. 沒 token 直接拒絕
-  if (!token) return deny();
-
+  if (!token) {
+    console.log(`[Proxy] No token found for ${pathname}`);
+    return deny();
+  }
+  
   // 2. 有 token，進行驗證
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error("[Proxy] CRITICAL: JWT_SECRET environment variable is missing");
+      return deny(true);
+    }
+    const secret = new TextEncoder().encode(jwtSecret);
     const { payload } = await jwtVerify(token, secret);
+    console.log(`[Proxy] Verified token for ${payload.email} (${payload.role}) accessing ${pathname}`);
 
     // 驗證成功，將身分寫入 Header 讓後端 API 方便取用
     const requestHeaders = new Headers(req.headers);
@@ -66,7 +75,8 @@ export async function proxy(req: NextRequest) {
     if (payload.role) requestHeaders.set("x-user-role", String(payload.role));
 
     return NextResponse.next({ request: { headers: requestHeaders } });
-  } catch {
+  } catch (err) {
+    console.error(`[Proxy] JWT verification failed for ${pathname}:`, err);
     // Token 過期或無效
     return deny(true);
   }

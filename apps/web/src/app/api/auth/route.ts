@@ -139,6 +139,7 @@ export async function POST(req: NextRequest) {
 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
+      console.error("[Auth API] CRITICAL: JWT_SECRET environment variable is missing");
       return buildError(500, ErrorCodes.INTERNAL_ERROR, "伺服器缺少 JWT 設定");
     }
 

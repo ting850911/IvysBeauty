@@ -11,11 +11,10 @@ export async function PUT(req: Request) {
     const body = await req.json();
     const { phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName } = body;
 
-    const existing = await prisma.storeInfo.findFirst();
     const storeInfo = await prisma.storeInfo.upsert({
-      where: { id: existing?.id || 'temp-id' },
+      where: { id: "global" },
       update: { phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName },
-      create: { phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName },
+      create: { id: "global", phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName },
     });
 
     return NextResponse.json(storeInfo);
