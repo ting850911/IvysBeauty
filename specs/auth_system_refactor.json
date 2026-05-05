@@ -1,0 +1,47 @@
+[
+  {
+    "task": "implement_safe_redirect_helper",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Implement getSafeRedirectPath(path: string | null): string in a new helper file",
+      "Whitelist allowed paths: '/', '/booking', '/history', '/admin' and their subpaths",
+      "Strictly prohibit external URLs (http/https), protocol-relative URLs (//), and unknown paths",
+      "Default to '/' if input is invalid or empty"
+    ],
+    "acceptance": [
+      "Helper correctly filters malicious or external URLs",
+      "Tests cover empty, valid, and invalid path scenarios"
+    ]
+  },
+  {
+    "task": "refactor_proxy_access_control",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Strictly follow proxy.md rules",
+      "NEVER clear token on /login entry (Redline #128)",
+      "Redirect authenticated users with valid tokens from /login to '/' (Rule #136)",
+      "Implement server-side role check for /admin (OWNER only)",
+      "Return 401/403 for API requests instead of redirecting (Rule #32)",
+      "Integrate the new getSafeRedirectPath for all redirection logic"
+    ],
+    "acceptance": [
+      "Infinite redirect loop is resolved by not deleting valid tokens",
+      "Unauthorized role access to /admin returns 403 (for API) or redirects to / (for page)"
+    ]
+  },
+  {
+    "task": "refactor_auth_ui_flow",
+    "owner": "Frontend Flow Agent",
+    "rules": [
+      "Registration success MUST NOT trigger auto-login (Rule #99)",
+      "After registration, switch to login view and clear password (Rule #108)",
+      "Do not auto-create accounts if email doesn't exist during login (Rule #101)",
+      "Pass 'redirect' parameter to profile completion flow if needed",
+      "Default successful login redirect to '/' instead of '/booking' (Rule #78)"
+    ],
+    "acceptance": [
+      "Registration flow requires manual login afterwards",
+      "Login flow correctly preserves the redirect path through profile completion"
+    ]
+  }
+]

@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { resolveErrorMessage } from "@ivysbeauty/shared";
 import { useRouter } from "next/navigation";
+import { getSafeRedirectPath } from "@/lib/auth-helpers";
 
 export function AuthForm() {
   const { login } = useAuth();
@@ -58,18 +59,20 @@ export function AuthForm() {
       // 以下為登入成功的邏輯
       login(data.token, data.user);
 
-      // Handle redirect
+      // Handle redirect safely
       const params = new URLSearchParams(window.location.search);
-      const redirect = params.get("redirect");
+      const rawRedirect = params.get("redirect");
+      const safeRedirect = getSafeRedirectPath(rawRedirect);
 
-      // 如果缺少手機或生日，強制轉導到 /booking 填寫資料
+      // 如果缺少手機或生日，導向預約頁面進行資料補全 (需帶上原始跳轉目標)
       if (!data.user.phone || !data.user.birthday) {
-        router.push("/booking");
-      } else if (redirect) {
-        // 轉往指定的目標頁面
-        router.push(redirect);
-      } else if (window.location.pathname === "/login") {
-        router.push("/");
+        const nextUrl = safeRedirect !== "/"
+          ? `/booking?redirect=${encodeURIComponent(safeRedirect)}`
+          : "/booking";
+        router.push(nextUrl);
+      } else {
+        // 資料完整，直接前往目標或首頁
+        router.push(safeRedirect);
       }
 
       router.refresh();

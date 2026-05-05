@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { getSafeRedirectPath } from "@/lib/auth-helpers";
 
 export function CompleteProfileForm() {
   const { user, updateUser } = useAuth();
+  const router = useRouter();
   const [phone, setPhone] = useState(user?.phone || "");
   const [birthday, setBirthday] = useState(user?.birthday || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,9 +37,18 @@ export function CompleteProfileForm() {
       }
 
       updateUser({ phone, birthday });
+
+      // Handle redirect after completion (對齊 proxy.md 第 89 點)
+      const params = new URLSearchParams(window.location.search);
+      const rawRedirect = params.get("redirect");
+      const safeRedirect = getSafeRedirectPath(rawRedirect);
+
+      // 如果有跳轉參數且不是為了補資料才來的 (即目標不是 /booking)，則導向目標
+      if (safeRedirect !== "/" && !safeRedirect.startsWith("/booking")) {
+        router.push(safeRedirect);
+      }
     } catch (err) {
       console.error(err);
-      
     } finally {
       setIsLoading(false);
     }
