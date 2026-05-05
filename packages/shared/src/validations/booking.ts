@@ -12,7 +12,6 @@ export type CreateBookingPayload = z.infer<typeof CreateBookingSchema>;
 
 export const UpdateBookingStatusSchema = z.object({
   status: z.enum(["PENDING", "CONFIRMED", "CANCELLED"]),
-  paymentProof: z.string().url().optional(),
 });
 
 export type UpdateBookingStatusPayload = z.infer<typeof UpdateBookingStatusSchema>;

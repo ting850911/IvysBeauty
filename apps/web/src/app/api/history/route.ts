@@ -34,8 +34,7 @@ export async function GET(req: NextRequest) {
 
     const safeBookings = bookings.map((booking) => ({
       ...booking,
-      notes: decryptField(booking.notes),
-      paymentProof: decryptField(booking.paymentProof),
+      notes: booking.notes, // 備註已改為明文儲存
     }));
 
     return NextResponse.json({ success: true, data: safeBookings });
