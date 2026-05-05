@@ -64,7 +64,11 @@ export function Navbar() {
                 Hi, {user.name}
               </button>
               <div className="absolute right-0 mt-2 w-32 bg-surface border border-border/50 shadow-soft rounded-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-2 group-hover:translate-y-0">
-                <Link href="/history" className="block px-4 py-3 text-sm hover:bg-accent-primary/5 transition-colors">預約紀錄</Link>
+                {user.role === "OWNER" ? (
+                  <Link href="/admin" className="block px-4 py-3 text-sm hover:bg-accent-primary/5 transition-colors">後台系統</Link>
+                ) : (
+                  <Link href="/history" className="block px-4 py-3 text-sm hover:bg-accent-primary/5 transition-colors">預約紀錄</Link>
+                )}
                 <button onClick={logout} className="w-full text-left px-4 py-3 text-sm text-destructive hover:bg-destructive/5 transition-colors">登出</button>
               </div>
             </div>
@@ -130,13 +134,23 @@ export function Navbar() {
             </div>
           ) : user ? (
             <>
-              <Link
-                href="/history"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-sm font-medium transition-colors hover:text-primary py-3 border-b border-border/30"
-              >
-                預約紀錄
-              </Link>
+              {user.role === "OWNER" ? (
+                <Link
+                  href="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-sm font-medium transition-colors hover:text-primary py-3 border-b border-border/30"
+                >
+                  後台系統
+                </Link>
+              ) : (
+                <Link
+                  href="/history"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-sm font-medium transition-colors hover:text-primary py-3 border-b border-border/30"
+                >
+                  預約紀錄
+                </Link>
+              )}
               <button
                 onClick={() => { logout(); setIsMobileMenuOpen(false); }}
                 className="text-left text-sm font-medium text-destructive transition-colors hover:text-destructive/80 py-3"

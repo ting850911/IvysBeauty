@@ -6,10 +6,20 @@
     "pnpm": ">=8"
   },
   "scripts": {
-    "dev": "pnpm -r dev",
+    "dev": "dotenv -e .env -- pnpm -r dev",
+    "dev:local": "dotenv -e .env.test -- pnpm -r dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
+    "db:push": "dotenv -e .env -- pnpm --filter @ivysbeauty/database exec prisma db push",
+    "db:push:local": "dotenv -e .env.test -- pnpm --filter @ivysbeauty/database exec prisma db push",
+    "db:studio": "dotenv -e .env -- pnpm --filter @ivysbeauty/database exec prisma studio",
+    "db:studio:local": "dotenv -e .env.test -- pnpm --filter @ivysbeauty/database exec prisma studio",
+    "db:seed": "dotenv -e .env -- pnpm --filter @ivysbeauty/database exec prisma db seed",
+    "db:seed:local": "dotenv -e .env.test -- pnpm --filter @ivysbeauty/database exec prisma db seed",
     "postinstall": "pnpm --filter @ivysbeauty/database build"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0"
   }
 }

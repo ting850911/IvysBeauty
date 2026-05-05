@@ -3,9 +3,7 @@ import { prisma } from "@ivysbeauty/database";
 
 export async function GET() {
   try {
-    const storeInfo = await prisma.storeInfo.findUnique({
-      where: { id: "global" },
-    });
+    const storeInfo = await prisma.storeInfo.findFirst();
 
     if (!storeInfo) {
       return NextResponse.json({

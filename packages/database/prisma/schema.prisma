@@ -10,7 +10,7 @@ generator client {
 
 // 1. 全域店家資訊 (Store Info)
 model StoreInfo {
-  id          String   @id @default("global")
+  id          String   @id @default(cuid())
   phone       String?  // 主要聯絡手機
   line        String?  // Line 連結或 ID
   instagram   String?  // Instagram 連結
@@ -85,7 +85,6 @@ model Booking {
   service        Service       @relation(fields: [serviceId], references: [id])  
   customerId     String  
   customer       User          @relation(fields: [customerId], references: [id])  
-  paymentProof   String?       // 上傳的轉帳證明圖片網址
   notes          String?  
   createdAt      DateTime      @default(now())  
   updatedAt      DateTime      @default(now()) @updatedAt

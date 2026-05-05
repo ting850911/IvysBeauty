@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar } from '@/components/ui/calendar';
-import { format, isBefore } from 'date-fns';
-import { Check, Loader2 } from 'lucide-react';
+import { isBefore } from 'date-fns';
+import { Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toDate, formatInTimeZone } from 'date-fns-tz';
 import { useAuth } from '@/contexts/AuthContext';
@@ -65,7 +65,7 @@ export function BookingProcess() {
         customerName: data.customerName,
         customerPhone: data.customerPhone,
         startTime: toDate(`${data.date}T${data.time}:00`, { timeZone: 'Asia/Taipei' }).toISOString(),
-        notes: data.remarks || '無備註',
+        notes: data.remarks || "",
       };
 
       const res = await fetch('/api/bookings', {
@@ -113,10 +113,14 @@ export function BookingProcess() {
   }, [data, step, isMounted]);
 
   useEffect(() => {
-    if (user?.phone && !data.customerPhone) {
-      setData((prev) => ({ ...prev, customerPhone: user.phone! }));
+    if (user) {
+      setData((prev) => ({
+        ...prev,
+        customerName: prev.customerName || user.name || '',
+        customerPhone: prev.customerPhone || user.phone || '',
+      }));
     }
-  }, [user?.phone, data.customerPhone]);
+  }, [user]);
 
   useEffect(() => {
     if (step === 3 && data.location && data.service && data.date) {

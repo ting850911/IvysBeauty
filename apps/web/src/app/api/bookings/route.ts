@@ -70,17 +70,14 @@ export async function POST(req: NextRequest) {
         startTime: startDateTime,
         endTime: endDateTime,
         expiredAt,
-        notes: notes ? encryptField(notes) : null,
+        notes,
         status: "PENDING"
       }
     });
 
     return NextResponse.json({
       success: true,
-      data: {
-        ...booking,
-        notes: decryptField(booking.notes),
-      },
+      data: booking,
     });
 
   } catch (err) {

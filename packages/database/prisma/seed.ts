@@ -15,6 +15,7 @@ async function main() {
   await prisma.service.deleteMany();
   await prisma.location.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.storeInfo.deleteMany();
 
   // ─── 1. Locations ────────────────────────────────────────────────────────
   console.log("Seeding locations...");
@@ -23,7 +24,6 @@ async function main() {
     data: {
       name: "板橋工作室",
       address: "新埔捷運站 1 號出口・步行 3 分鐘",
-      phone: "02-2958-1234",
       openingHours: {
         Monday: "10:00-20:00",
         Tuesday: "10:00-20:00",
@@ -33,6 +33,7 @@ async function main() {
         Saturday: "10:00-20:00",
         Sunday: "休息",
       },
+      imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843322/ivys-beauty/hzssj5c8wyfbz9vgtca6.png", "https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843278/ivys-beauty/cmfvomh59wxgn3plop50.png"]
     },
   });
 
@@ -40,7 +41,6 @@ async function main() {
     data: {
       name: "宜蘭工作室",
       address: "宜蘭縣壯圍鄉永美路",
-      phone: "03-936-5678",
       openingHours: {
         Monday: "休息",
         Tuesday: "10:00-19:00",
@@ -160,6 +160,21 @@ async function main() {
       birthday: encryptField("1990-09-15"),
       role: "MEMBER",
     },
+  });
+
+  // ─── 3.5 StoreInfo ────────────────────────────────────────────────────────
+  console.log("Seeding store info...");
+  await prisma.storeInfo.create({
+    data: {
+      phone: "0912345678",
+      line: "ivysbeauty_line",
+      instagram: "ivysbeauty_ig",
+      facebook: "ivysbeauty_fb",
+      bankCode: "822",
+      bankName: "中國信託",
+      bankAccount: "123456789012",
+      bankAccountName: "艾微美學工作室",
+    }
   });
 
   // ─── 4. Bookings ──────────────────────────────────────────────────────────
@@ -323,81 +338,39 @@ async function main() {
 
   const portfolioItems = [
     {
-      imageUrl: "https://placehold.co/800x1000/DAD5CA/443E38?text=霧眉+1",
-      gender: "FEMALE" as const,
-      locationId: banqiao.id,
-      serviceId: brows.id,
-      description: "漸層柔霧眉｜自然棕",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/C8BFB5/443E38?text=霧眉+2",
-      gender: "FEMALE" as const,
-      locationId: yilan.id,
-      serviceId: brows.id,
-      description: "漸層柔霧眉｜深棕",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/B5ADA4/443E38?text=男霧眉",
+      imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777856267/ivys-beauty/ognykcebrk6ojwliiqgg.jpg"],
       gender: "MALE" as const,
       locationId: banqiao.id,
       serviceId: brows.id,
       description: "男生霧眉｜自然型",
     },
     {
-      imageUrl: "https://placehold.co/800x1000/E8C5BB/443E38?text=霧唇+1",
+      imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777856256/ivys-beauty/bio33z603vso6afz7eg5.jpg"],
+      gender: "FEMALE" as const,
+      locationId: yilan.id,
+      serviceId: brows.id,
+      description: "漸層柔霧眉｜深棕",
+    },
+    {
+      imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777856242/ivys-beauty/wcend5mzkpagfndq1jue.jpg"],
       gender: "FEMALE" as const,
       locationId: banqiao.id,
       serviceId: lips.id,
       description: "漸變絲絨霧唇｜豆沙色",
     },
     {
-      imageUrl: "https://placehold.co/800x1000/D4A09A/443E38?text=霧唇+2",
-      gender: "FEMALE" as const,
-      locationId: yilan.id,
-      serviceId: lips.id,
-      description: "漸變絲絨霧唇｜裸粉色",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/C08080/443E38?text=霧唇+3",
-      gender: "FEMALE" as const,
-      locationId: banqiao.id,
-      serviceId: lips.id,
-      description: "漸變絲絨霧唇｜玫瑰色",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/DAD5CA/5C574F?text=補色眉",
+      imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777856223/ivys-beauty/ukurhfyjhrrr1eiuyfum.jpg"],
       gender: "FEMALE" as const,
       locationId: yilan.id,
       serviceId: browsRefill.id,
       description: "霧眉補色｜一年後補色效果",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/E8C5BB/5C574F?text=補色唇",
-      gender: "FEMALE" as const,
-      locationId: banqiao.id,
-      serviceId: lipsRefill.id,
-      description: "霧唇補色｜補色後對比",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/F0E8E0/5C574F?text=淡色",
-      gender: "FEMALE" as const,
-      locationId: banqiao.id,
-      serviceId: colorCorrection.id,
-      description: "唇部淡色｜舊紋改色",
-    },
-    {
-      imageUrl: "https://placehold.co/800x1000/C8C0B8/443E38?text=霧眉示範",
-      gender: "UNISEX" as const,
-      locationId: undefined,
-      serviceId: brows.id,
-      description: "霧眉｜各種臉型示範",
     },
   ];
 
   for (const item of portfolioItems) {
     await prisma.portfolio.create({
       data: {
-        imageUrl: item.imageUrl,
+        imageUrls: item.imageUrls,
         gender: item.gender,
         description: item.description,
         ...(item.locationId ? { locationId: item.locationId } : {}),
