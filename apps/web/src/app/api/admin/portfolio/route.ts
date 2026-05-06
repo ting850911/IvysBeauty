@@ -7,7 +7,7 @@ export async function GET(req: Request) {
     const role = req.headers.get("x-user-role");
     
     if (role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const portfolios = await prisma.portfolio.findMany({
@@ -18,10 +18,10 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json(portfolios);
+    return NextResponse.json({ success: true, data: portfolios });
   } catch (error) {
     console.error("Fetch portfolios error:", error);
-    return NextResponse.json({ error: "Failed to fetch portfolios" }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Failed to fetch portfolios" }, { status: 500 });
   }
 }
 
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const role = req.headers.get("x-user-role");
     
     if (role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const data = await req.json();
@@ -57,9 +57,9 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(newPortfolio);
+    return NextResponse.json({ success: true, data: newPortfolio });
   } catch (error: any) {
     console.error("Create portfolio error:", error);
-    return NextResponse.json({ error: error?.message || String(error) || "Failed to create portfolio" }, { status: 500 });
+    return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to create portfolio" }, { status: 500 });
   }
 }

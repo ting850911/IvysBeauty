@@ -7,7 +7,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const role = req.headers.get("x-user-role");
     
     if (role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { id } = await params;
@@ -35,10 +35,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       },
     });
 
-    return NextResponse.json(updatedPortfolio);
+    return NextResponse.json({ success: true, data: updatedPortfolio });
   } catch (error: any) {
     console.error("Update portfolio error:", error);
-    return NextResponse.json({ error: error?.message || String(error) || "Failed to update portfolio" }, { status: 500 });
+    return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to update portfolio" }, { status: 500 });
   }
 }
 
@@ -48,7 +48,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const role = req.headers.get("x-user-role");
     
     if (role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { id } = await params;
@@ -60,6 +60,6 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Delete portfolio error:", error);
-    return NextResponse.json({ error: error?.message || String(error) || "Failed to delete portfolio" }, { status: 500 });
+    return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to delete portfolio" }, { status: 500 });
   }
 }

@@ -1,6 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@ivysbeauty/database";
 
+export async function GET(req: Request) {
+  try {
+    const role = req.headers.get('x-user-role');
+    if (role !== 'OWNER') {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const storeInfo = await prisma.storeInfo.findFirst();
+    return NextResponse.json({ success: true, data: storeInfo });
+  } catch (error: any) {
+    console.error("[StoreInfo Fetch Error]", error);
+    return NextResponse.json({ error: "Failed to fetch store info" }, { status: 500 });
+  }
+}
+
 export async function PUT(req: Request) {
   try {
     const role = req.headers.get('x-user-role');
@@ -26,7 +41,7 @@ export async function PUT(req: Request) {
       });
     }
 
-    return NextResponse.json(storeInfo);
+    return NextResponse.json({ success: true, data: storeInfo });
   } catch (error: any) {
     console.error("[StoreInfo Update Error]", error);
     return NextResponse.json({ error: "Failed to update store info" }, { status: 500 });

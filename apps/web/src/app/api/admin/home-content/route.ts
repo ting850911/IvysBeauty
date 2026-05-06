@@ -26,11 +26,17 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const role = req.headers.get('x-user-role');
+    if (role !== 'OWNER') {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const content = await prisma.homeContent.findFirst();
     return NextResponse.json({ success: true, data: content });
   } catch (error) {
+    console.error("[HomeContent Fetch Error]", error);
     return NextResponse.json({ success: false, error: "Failed to fetch home content" }, { status: 500 });
   }
 }
