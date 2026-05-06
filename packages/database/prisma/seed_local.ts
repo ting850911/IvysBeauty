@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { encryptField } from "../src/pii-encryption";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,7 @@ async function main() {
     data: {
       name: "板橋工作室",
       address: "新埔捷運站 1 號出口・步行 3 分鐘",
-      openingHours: [],
+      openingHours: [{"label":"週一","isOpen":false,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":1},{"label":"週二","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":2},{"label":"週三","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":3},{"label":"週四","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":4},{"label":"週五","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":5},{"label":"週六","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":6},{"label":"週日","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":0}],
       imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843322/ivys-beauty/hzssj5c8wyfbz9vgtca6.png", "https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843278/ivys-beauty/cmfvomh59wxgn3plop50.png"]
     },
   });
@@ -33,7 +34,7 @@ async function main() {
     data: {
       name: "宜蘭工作室",
       address: "宜蘭縣壯圍鄉永美路",
-      openingHours: [],
+      openingHours: [{"label":"週一","isOpen":false,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":1},{"label":"週二","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":2},{"label":"週三","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":3},{"label":"週四","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":4},{"label":"週五","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":5},{"label":"週六","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":6},{"label":"週日","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":0}],
     },
   });
 
@@ -88,7 +89,7 @@ async function main() {
   // ─── 3. Users ─────────────────────────────────────────────────────────────
   console.log("Seeding users...");
 
-  const ownerHash = await bcrypt.hash("Owner123$", 10);
+  const ownerHash = await bcrypt.hash("owner1234", 10);
   const memberHash = await bcrypt.hash("test1234", 10);
 
   await prisma.user.create({
@@ -96,10 +97,55 @@ async function main() {
       email: "ivy@ivysbeauty.com",
       passwordHash: ownerHash,
       name: "Ivy Hong",
+      phone: encryptField("0987654321"),
+      birthday: encryptField("1990-05-20"),
       role: "OWNER",
     },
   });
 
+  const alice = await prisma.user.create({
+    data: {
+      email: "alice@test.com",
+      passwordHash: memberHash,
+      name: "陳小美",
+      phone: encryptField("0912345678"),
+      birthday: encryptField("1995-03-15"),
+      role: "MEMBER",
+    },
+  });
+
+  const bob = await prisma.user.create({
+    data: {
+      email: "bob@test.com",
+      passwordHash: memberHash,
+      name: "林志偉",
+      phone: encryptField("0923456789"),
+      birthday: encryptField("1988-07-22"),
+      role: "MEMBER",
+    },
+  });
+
+  const carol = await prisma.user.create({
+    data: {
+      email: "carol@test.com",
+      passwordHash: memberHash,
+      name: "王小華",
+      phone: encryptField("0934567890"),
+      birthday: encryptField("1992-11-30"),
+      role: "MEMBER",
+    },
+  });
+
+  const david = await prisma.user.create({
+    data: {
+      email: "david@test.com",
+      passwordHash: memberHash,
+      name: "李小明",
+      phone: encryptField("0945678901"),
+      birthday: encryptField("1990-09-15"),
+      role: "MEMBER",
+    },
+  });
 
   // ─── 3.5 StoreInfo ────────────────────────────────────────────────────────
   console.log("Seeding store info...");
@@ -118,6 +164,159 @@ async function main() {
 
   // ─── 4. Bookings ──────────────────────────────────────────────────────────
   console.log("Seeding bookings...");
+
+  // Past CONFIRMED — banqiao
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-03-01T10:00:00"),
+      startTime: tw("2026-03-15T10:00:00"),
+      endTime: tw("2026-03-15T13:30:00"),
+      expiredAt: tw("2026-03-02T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: brows.id,
+      customerId: alice.id,
+      notes: "第一次做霧眉，有點緊張",
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-03-10T10:00:00"),
+      startTime: tw("2026-04-01T11:00:00"),
+      endTime: tw("2026-04-01T13:30:00"),
+      expiredAt: tw("2026-03-11T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: browsRefill.id,
+      customerId: carol.id,
+    },
+  });
+
+  // Past CONFIRMED — yilan
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-03-01T10:00:00"),
+      startTime: tw("2026-03-20T14:00:00"),
+      endTime: tw("2026-03-20T17:30:00"),
+      expiredAt: tw("2026-03-02T10:00:00"),
+      locationId: yilan.id,
+      serviceId: lips.id,
+      customerId: bob.id,
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-03-20T10:00:00"),
+      startTime: tw("2026-04-10T10:00:00"),
+      endTime: tw("2026-04-10T12:30:00"),
+      expiredAt: tw("2026-03-21T10:00:00"),
+      locationId: yilan.id,
+      serviceId: lipsRefill.id,
+      customerId: alice.id,
+      notes: "補色效果很好",
+    },
+  });
+
+  // Upcoming CONFIRMED — banqiao
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-04-01T10:00:00"),
+      startTime: tw("2026-04-25T10:00:00"),
+      endTime: tw("2026-04-25T13:30:00"),
+      expiredAt: tw("2026-04-02T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: brows.id,
+      customerId: alice.id,
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-04-05T10:00:00"),
+      startTime: tw("2026-04-28T14:00:00"),
+      endTime: tw("2026-04-28T16:30:00"),
+      expiredAt: tw("2026-04-06T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: browsRefill.id,
+      customerId: bob.id,
+    },
+  });
+
+  // Upcoming CONFIRMED — yilan
+  await prisma.booking.create({
+    data: {
+      status: "CONFIRMED",
+      createdAt: tw("2026-04-10T10:00:00"),
+      startTime: tw("2026-05-02T10:00:00"),
+      endTime: tw("2026-05-02T13:30:00"),
+      expiredAt: tw("2026-04-11T10:00:00"),
+      locationId: yilan.id,
+      serviceId: lips.id,
+      customerId: carol.id,
+      notes: "對自然色調有興趣",
+    },
+  });
+
+  // Upcoming PENDING — banqiao
+  await prisma.booking.create({
+    data: {
+      status: "PENDING",
+      createdAt: tw("2026-04-20T10:00:00"),
+      startTime: tw("2026-04-23T10:00:00"),
+      endTime: tw("2026-04-23T13:30:00"),
+      expiredAt: tw("2026-04-21T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: brows.id,
+      customerId: david.id,
+    },
+  });
+
+  // Upcoming PENDING — yilan
+  await prisma.booking.create({
+    data: {
+      status: "PENDING",
+      createdAt: tw("2026-04-22T14:00:00"),
+      startTime: tw("2026-04-26T14:00:00"),
+      endTime: tw("2026-04-26T17:30:00"),
+      expiredAt: tw("2026-04-23T14:00:00"),
+      locationId: yilan.id,
+      serviceId: lips.id,
+      customerId: david.id,
+    },
+  });
+
+  // CANCELLED — banqiao
+  await prisma.booking.create({
+    data: {
+      status: "CANCELLED",
+      createdAt: tw("2026-01-15T10:00:00"),
+      startTime: tw("2026-02-15T10:00:00"),
+      endTime: tw("2026-02-15T12:00:00"),
+      expiredAt: tw("2026-01-16T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: colorCorrection.id,
+      customerId: alice.id,
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      status: "CANCELLED",
+      createdAt: tw("2026-02-01T10:00:00"),
+      startTime: tw("2026-03-01T10:00:00"),
+      endTime: tw("2026-03-01T13:30:00"),
+      expiredAt: tw("2026-02-02T10:00:00"),
+      locationId: banqiao.id,
+      serviceId: lips.id,
+      customerId: carol.id,
+    },
+  });
 
   // ─── 5. Portfolio ─────────────────────────────────────────────────────────
   console.log("Seeding portfolio...");
@@ -203,7 +402,11 @@ async function main() {
   console.log("Seeding complete!");
   console.log("");
   console.log("Accounts:");
-  console.log("  Owner  → ivy@ivysbeauty.com  / Owner123$");
+  console.log("  Owner  → ivy@ivysbeauty.com  / owner1234");
+  console.log("  Alice  → alice@test.com       / test1234");
+  console.log("  Bob    → bob@test.com         / test1234");
+  console.log("  Carol  → carol@test.com       / test1234");
+  console.log("  David  → david@test.com       / test1234");
 }
 
 main()
