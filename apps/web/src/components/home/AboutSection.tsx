@@ -1,7 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import * as React from "react";
 import Image from "next/image";
-import bgImg2 from "@/assets/background_2.png";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselDots,
+} from "@/components/ui/carousel";
 
 interface Location {
   id: string;
@@ -14,25 +20,31 @@ interface StoreInfo {
   phone: string;
   line: string;
   instagram: string;
-  facebook: string;
+  threads: string;
 }
 
-export function AboutSection() {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [storeInfo, setStoreInfo] = useState<StoreInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface AboutData {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/locations").then(res => res.json()),
-      fetch("/api/store-info").then(res => res.json())
-    ]).then(([locRes, storeRes]) => {
-      if (locRes.success) setLocations(locRes.data);
-      if (storeRes.success) setStoreInfo(storeRes.data);
-    }).finally(() => {
-      setIsLoading(false);
-    });
-  }, []);
+interface AboutSectionProps {
+  data?: AboutData;
+  locations?: Location[];
+  storeInfo?: StoreInfo | null;
+}
+
+export function AboutSection({ data, locations = [], storeInfo }: AboutSectionProps) {
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
+
+  const content = {
+    eyebrow: data?.eyebrow,
+    title: data?.title,
+    description: data?.description
+  };
 
   const studioImages = locations.flatMap(l => l.imageUrls).length > 0
     ? locations.flatMap(l => l.imageUrls)
@@ -43,16 +55,14 @@ export function AboutSection() {
       <section id="about" className="relative overflow-hidden w-full py-16 md:py-24 px-6 md:px-12">
         <div className="container mx-auto text-center space-y-8 relative z-10">
           <p className="text-eyebrow">
-            About Us
+            {content.eyebrow}
           </p>
           <h2 className="leading-[1.1] drop-shadow-sm">
-            拒絕套板，量身打造
+            {content.title}
           </h2>
-          <p className="leading-relaxed max-w-2xl mx-auto">
-            滿滿的自信感從愛自己開始，不為誰而改變，只想對自己更好一點💗
-            <br />
-            我們致力於修飾臉型、提升氣質，讓您擁有最穩定的留色與極短的修復期。
-          </p>
+          <div className="leading-relaxed max-w-2xl mx-auto text-muted-foreground whitespace-pre-wrap">
+            {content.description}
+          </div>
           <div className="bg-background/60 backdrop-blur-md shadow-soft p-8 rounded-3xl space-y-3 max-w-2xl mx-auto border border-white/20">
             <h4>合法營業登記・全預約制</h4>
             <p>
@@ -100,36 +110,48 @@ export function AboutSection() {
                     {storeInfo?.line && (
                       <a href={storeInfo.line.startsWith('http') ? storeInfo.line : `https://line.me/R/ti/p/${storeInfo.line}`} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors">Line</a>
                     )}
-                    {storeInfo?.facebook && (
-                      <a href={storeInfo.facebook} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors">Facebook</a>
+                    {storeInfo?.threads && (
+                      <a href={storeInfo.threads.startsWith('http') ? storeInfo.threads : `https://threads.net/${storeInfo.threads.replace('@', '')}`} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-primary transition-colors">Threads</a>
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="relative md:w-full lg:w-[60%] justify-self-end rounded-[2rem] overflow-hidden bg-surface shadow-soft group">
-              <div className="flex w-full overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                {studioImages.map((src, index) => (
-                  <div key={index} className="relative w-full shrink-0 snap-center md:aspect-square lg:aspect-[3/4]">
-                    <Image
-                      src={src}
-                      alt={`Studio space ${index + 1}`}
-                      fill
-                    />
-                  </div>
-                ))}
-              </div>
-              {/* Indicator dots (visual cue for scrolling) */}
-              <div className="absolute bottom-6 inset-x-0 flex justify-center gap-2 pointer-events-none">
-                {studioImages.map((_, i) => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/70 shadow-sm" />
-                ))}
-              </div>
-              {/* Helper text overlay */}
-              <div className="absolute top-6 right-6 px-3 py-1.5 rounded-full bg-background/60 backdrop-blur-md text-xs font-medium pointer-events-none">
-                往右滑動
-              </div>
+            <div className="md:w-full lg:w-[60%] justify-self-end rounded-[2rem] overflow-hidden shadow-soft relative aspect-square lg:aspect-[3/4]">
+              {studioImages.length > 1 ? (
+                <Carousel
+                  plugins={[plugin.current]}
+                  onMouseEnter={plugin.current.stop}
+                  onMouseLeave={plugin.current.reset}
+                  opts={{
+                    align: "start",
+                    loop: true,
+                  }}
+                  className="w-full h-full"
+                >
+                  <CarouselContent className="-ml-0 h-full">
+                    {studioImages.map((src, index) => (
+                      <CarouselItem key={index} className="pl-0 relative w-full h-full">
+                        <Image
+                          src={src}
+                          alt={`Studio space ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselDots className="absolute bottom-6 inset-x-0 z-20" />
+                </Carousel>
+              ) : (
+                <Image
+                  src={studioImages[0]}
+                  alt="Studio space"
+                  fill
+                  className="object-cover"
+                />
+              )}
             </div>
           </div>
         </div>

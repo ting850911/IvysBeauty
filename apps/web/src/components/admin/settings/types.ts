@@ -2,7 +2,7 @@ export interface AdminStoreInfo {
   phone: string | null;
   line: string | null;
   instagram: string | null;
-  facebook: string | null;
+  threads: string | null;
   bankCode: string | null;
   bankName: string | null;
   bankAccount: string | null;

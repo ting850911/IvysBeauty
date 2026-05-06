@@ -56,13 +56,13 @@ export function StoreInfoSection({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Facebook 連結</label>
+            <label className="text-sm font-medium text-foreground">Threads 連結</label>
             <input
               type="text"
-              value={storeInfo.facebook || ""}
-              onChange={e => setStoreInfo({ ...storeInfo, facebook: e.target.value })}
+              value={storeInfo.threads || ""}
+              onChange={e => setStoreInfo({ ...storeInfo, threads: e.target.value })}
               className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-              placeholder="https://facebook.com/..."
+              placeholder="https://threads.net/..."
             />
           </div>
         </div>

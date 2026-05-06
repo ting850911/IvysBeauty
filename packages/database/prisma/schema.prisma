@@ -14,7 +14,7 @@ model StoreInfo {
   phone       String?  // 主要聯絡手機
   line        String?  // Line 連結或 ID
   instagram   String?  // Instagram 連結
-  facebook    String?  // Facebook 連結
+  threads     String?  // Threads 連結
   bankCode    String?  // 銀行代碼
   bankName    String?  // 銀行名稱
   bankAccount String?  // 匯款帳號
@@ -118,4 +118,14 @@ enum Gender {
   MALE  
   FEMALE  
   UNISEX  
+}
+
+// 6. 首頁管理內容 (Home Content)
+model HomeContent {
+  id        String   @id @default("singleton")
+  hero      Json     // { eyebrow, title, description, imageUrls, buttonText }
+  about     Json     // { eyebrow, title, description }
+  notice    Json     // { eyebrow, title, description, rules: [{ title, content }] }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminSettingsPage() {
   const [locations, storeInfoData, services] = await Promise.all([
     prisma.location.findMany({ orderBy: { name: 'asc' } }),
-    prisma.storeInfo.findUnique({ where: { id: "global" } }),
+    prisma.storeInfo.findFirst(),
     prisma.service.findMany({ 
       orderBy: { createdAt: 'asc' },
       include: { locations: true }
@@ -18,7 +18,7 @@ export default async function AdminSettingsPage() {
     phone: "", 
     line: "", 
     instagram: "", 
-    facebook: "",
+    threads: "",
     bankCode: "",
     bankName: "",
     bankAccount: "",

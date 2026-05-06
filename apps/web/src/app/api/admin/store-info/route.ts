@@ -9,13 +9,22 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const { phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName } = body;
+    const { phone, line, instagram, threads, bankCode, bankName, bankAccount, bankAccountName } = body;
 
-    const storeInfo = await prisma.storeInfo.upsert({
-      where: { id: "global" },
-      update: { phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName },
-      create: { id: "global", phone, line, instagram, facebook, bankCode, bankName, bankAccount, bankAccountName },
-    });
+    // Find the first record (singleton)
+    const existing = await prisma.storeInfo.findFirst();
+
+    let storeInfo;
+    if (existing) {
+      storeInfo = await prisma.storeInfo.update({
+        where: { id: existing.id },
+        data: { phone, line, instagram, threads, bankCode, bankName, bankAccount, bankAccountName },
+      });
+    } else {
+      storeInfo = await prisma.storeInfo.create({
+        data: { phone, line, instagram, threads, bankCode, bankName, bankAccount, bankAccountName },
+      });
+    }
 
     return NextResponse.json(storeInfo);
   } catch (error: any) {

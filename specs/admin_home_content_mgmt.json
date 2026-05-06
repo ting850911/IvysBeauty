@@ -1,0 +1,45 @@
+[
+  {
+    "task": "setup_home_content_mgmt_layout",
+    "owner": "UI Design System Agent",
+    "rules": [
+      "Create the layout for 'Home Content Management' as per the mockup",
+      "Left Sidebar: Tabs for 'Hero 區塊', 'About 區塊', '預約需知' (Remove Portfolio and CTA tabs)",
+      "Right Panel: Real-time preview area with 'Desktop' and 'Mobile' toggle",
+      "Color Palette: Milk tea theme (Background #FBF9F4, Surface #F6EEE1)",
+      "Use Shadcn/UI for form elements and layout structure"
+    ],
+    "acceptance": [
+      "Layout matches the mockup visually",
+      "Tabs correctly switch between different content forms"
+    ]
+  },
+  {
+    "task": "implement_content_preview_sync",
+    "owner": "Frontend Flow Agent",
+    "rules": [
+      "Define state for all home content fields (Hero text, images, about description, etc.)",
+      "Integrate ACTUAL frontend components (Hero, About, Notice) into the preview panel",
+      "Use a scale-down container (e.g. transform: scale(0.6)) to show desktop view within the admin layout",
+      "Ensure preview updates INSTANTLY as user types in the form",
+      "Add 'Booking Notice' section implementation to both front and back end"
+    ],
+    "acceptance": [
+      "Typing in the form causes the preview to update without lag",
+      "Preview rendering is identical to the actual website"
+    ]
+  },
+  {
+    "task": "implement_home_content_api",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Create API routes (GET/POST) for fetching and saving home content",
+      "Store content in the database (likely in a 'SiteSettings' or 'StoreInfo' model)",
+      "Handle image uploads via Cloudinary"
+    ],
+    "acceptance": [
+      "Clicking 'Save' successfully persists the changes",
+      "The main website displays the updated content upon reload"
+    ]
+  }
+]

@@ -40,7 +40,7 @@ export function PortfolioGallery() {
         ]);
 
         if (portData.success) setItems(portData.data);
-        
+
         if (servData.success) {
           const sMap: Record<string, string> = {};
           servData.data.forEach((s: any) => { sMap[s.id] = s.name; });
@@ -174,7 +174,7 @@ export function PortfolioGallery() {
               </Button>
             </div>
           ) : (
-            <div className="grid gap-6 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols">
+            <div className="grid gap-6 md:grid-cols-4 sm:grid-cols">
               {filtered.map((item: any, i) => (
                 <PortfolioCard key={item.id} item={item} index={i} />
               ))}

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Image as ImageIcon, Settings, Menu, X, Clock } from "lucide-react";
+import { Calendar, Image as ImageIcon, Settings, Menu, X, Clock, LayoutDashboard } from "lucide-react";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
 import { useState } from "react";
 
 export const NAV_ITEMS = [
   { label: "預約清單", href: "/admin", icon: Calendar, subtitle: "管理與查看所有顧客預約" },
+  { label: "首頁內容管理", href: "/admin/home-content", icon: LayoutDashboard, subtitle: "編輯首頁各區塊內容與預覽" },
   { label: "基本設定", href: "/admin/settings", icon: Settings, subtitle: "社群連結、分店與服務項目" },
   { label: "排班設定", href: "/admin/schedules", icon: Clock, subtitle: "設定分店營業時間與休假" },
   { label: "作品集", href: "/admin/portfolio", icon: ImageIcon, subtitle: "管理展示作品與分類" },

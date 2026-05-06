@@ -12,7 +12,7 @@ export async function GET() {
           phone: "",
           line: "",
           instagram: "",
-          facebook: "",
+          threads: "",
           bankCode: "",
           bankName: "",
           bankAccount: "",

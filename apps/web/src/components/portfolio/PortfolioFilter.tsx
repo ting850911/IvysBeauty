@@ -1,10 +1,9 @@
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { SlidersHorizontal, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { SlidersHorizontal, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FilterOption {
   value: string;
@@ -24,58 +23,95 @@ interface PortfolioFilterProps {
   onClear: () => void;
 }
 
-export function PortfolioFilter({ sections, activeCount, onClear }: PortfolioFilterProps) {
+export function PortfolioFilter({
+  sections,
+  activeCount,
+  onClear,
+}: PortfolioFilterProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 點擊外部關閉
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Button variant="outline" size="sm" className="gap-2 w-auto pointer-events-none">
-          <SlidersHorizontal className="w-4 h-4" />
-          篩選
-          {activeCount > 0 && (
-            <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
-              {activeCount}
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        className="w-[min(92vw,28rem)] rounded-3xl border-border bg-background p-6 shadow-elevated"
+    <div className="relative inline-block" ref={containerRef}>
+      {/* Trigger Button */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="gap-2 w-auto"
+        onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="mb-5 flex items-center justify-between">
+        <SlidersHorizontal className="w-4 h-4" />
+        篩選
+        {activeCount > 0 && (
+          <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
+            {activeCount}
+          </span>
+        )}
+      </Button>
+
+      {/* Filter Content (Popover) */}
+      {isOpen && (
+        <div
+          className="absolute top-full right-0 z-50 mt-2 w-[20rem] rounded-3xl border border-border bg-white p-4 shadow-2xl animate-in fade-in-0 zoom-in-95"
+        >
           {activeCount > 0 && (
-            <button
-              onClick={onClear}
-              className="inline-flex items-center gap-1 text-xs font-light text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-            >
-              <X className="w-3 h-3" />
-              清除全部
-            </button>
-          )}
-        </div>
-        <div className="space-y-6">
-          {sections.map((section) => (
-            <div key={section.label} className="space-y-3">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-light">
-                {section.label}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {section.options.map((opt) => (
-                  <Button
-                    key={opt.value}
-                    variant="pill"
-                    size="sm"
-                    data-active={section.value === opt.value}
-                    onClick={() => section.onChange(opt.value)}
-                  >
-                    {opt.label}
-                  </Button>
-                ))}
-              </div>
+            <div className="absolute top-2 right-4">
+              <button
+                onClick={onClear}
+                className="text-xs text-muted-foreground/50 hover:text-primary cursor-pointer"
+              >
+                清除
+              </button>
             </div>
-          ))}
+          )}
+
+          <div className="space-y-6">
+            {sections.map((section) => (
+              <div key={section.label} className="space-y-3">
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
+                  {section.label}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {section.options.map((option) => {
+                    const isSelected = section.value === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        onClick={() => section.onChange(option.value)}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-all duration-300",
+                          isSelected
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                        )}
+                      >
+                        {isSelected && <Check className="w-3 h-3" />}
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      )}
+    </div>
   );
 }
