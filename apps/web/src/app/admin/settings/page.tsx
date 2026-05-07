@@ -31,8 +31,6 @@ export default async function AdminSettingsPage() {
     address: loc.address,
     imageUrls: loc.imageUrls,
     isPublished: loc.isPublished,
-    openingHours: loc.openingHours ? JSON.parse(JSON.stringify(loc.openingHours)) : null,
-    vacationDays: loc.vacationDays.map((d: any) => d.toISOString()),
   }));
 
   const safeServices: AdminService[] = services.map((srv: any) => ({

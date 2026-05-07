@@ -4,13 +4,10 @@ import {
   endOfMonth, 
   eachDayOfInterval, 
   format, 
-  parse, 
   isBefore, 
   addMinutes, 
   isAfter, 
-  isEqual,
   getDay,
-  startOfDay
 } from "date-fns";
 import { formatInTimeZone, toDate } from "date-fns-tz";
 import { DailyHour } from "@ivysbeauty/shared";
@@ -36,8 +33,20 @@ export async function getMonthAvailability(
     throw new Error("Location or Service not found");
   }
 
-  const openingHours = (location.openingHours as unknown) as DailyHour[] || [];
-  const vacationDays = location.vacationDays.map(d => formatInTimeZone(d, TIME_ZONE, "yyyy-MM-dd"));
+  // Fetch MonthlySchedule for this location and month
+  const monthStr = `${year}-${String(month).padStart(2, '0')}`;
+  const schedule = await (prisma as any).monthlySchedule.findUnique({
+    where: {
+      locationId_month: {
+        locationId,
+        month: monthStr
+      }
+    }
+  });
+
+  const allHours: DailyHour[] = (schedule?.all as any) || [];
+  const overrides = (schedule?.overrides as any) || {};
+
 
   // 2. Define Time Range
   const start = startOfMonth(new Date(year, month - 1));
@@ -69,15 +78,13 @@ export async function getMonthAvailability(
   for (const day of days) {
     const dateStr = format(day, "yyyy-MM-dd");
     
-    // Check if holiday
-    if (vacationDays.includes(dateStr)) {
-      availability[dateStr] = { available: false, slots: [] };
-      continue;
-    }
+    // Priority 1: Check for specific date overrides
+    let dayConfig: any = overrides[dateStr];
+    const dayOfWeek = getDay(day);
 
-    // Check if open on this day of week
-    const dayOfWeek = getDay(day); // 0=Sun, 1=Mon, ...
-    const dayConfig = openingHours.find(h => h.dayOfWeek === dayOfWeek);
+    if (!dayConfig) {
+      dayConfig = allHours.find(h => h.dayOfWeek === dayOfWeek);
+    }
 
     if (!dayConfig || !dayConfig.isOpen) {
       availability[dateStr] = { available: false, slots: [] };

@@ -1,0 +1,51 @@
+[
+  {
+    "task": "backend_data_consolidation",
+    "owner": "Backend Logic Agent",
+    "description": "將所有排程邏輯整合至單一 Json 欄位 openingHours，並更新時段計算引擎。",
+    "rules": [
+      "支援 { 'weekly': DailyHour[], 'overrides': { [key: string]: DailyHour } } 結構",
+      "修改 availability.ts 的 getMonthAvailability 函式，讓 overrides 的優先權高於 weekly",
+      "API Route (/api/admin/locations/[id]) 需支援接收並儲存此結構化 JSON"
+    ],
+    "acceptance": [
+      "API 回傳資料結構符合規範",
+      "前台預約時段能精確反映 overrides 中的特殊營業/休假時間",
+      "既有的每週常態排程在沒有覆蓋設定時依然運作正常"
+    ]
+  },
+  {
+    "task": "design_system_layout_tokens",
+    "owner": "UI Design System Agent",
+    "description": "定義橫向排程佈局與高級感彈窗的視覺規範。",
+    "rules": [
+      "左側 (70%)：大型滿版月曆網格。",
+      "右側 (30%)：常態排程（一週七天）與特定日期覆蓋設定區塊。",
+      "定義時間範圍選擇器的橫向排列樣式 (Start - End)",
+      "定義休息時間 (Break Time) 的 UI 規範，使其與可預約時段設定完全一致",
+      "設計特定日期調整用的 Modal 視覺樣式（包含 Milk Tea 色系、圓角、磨砂背景等）",
+      "定義月曆上的特殊狀態標示（例如：已覆蓋日期、特殊休假日期）"
+    ],
+    "acceptance": [
+      "提供清晰的 CSS 類名或樣式 Token 建議",
+      "視覺設計符合 Premium Dashboard 的質感"
+    ]
+  },
+  {
+    "task": "frontend_schedule_interaction",
+    "owner": "Frontend Flow Agent",
+    "description": "重構 SchedulesClient.tsx，實作全新的佈局與互動彈窗。",
+    "rules": [
+      "依據新佈局重構常態排程列表",
+      "實作一致性的營業/休息時段調整組件",
+      "在月曆組件中整合 onDayClick 互動",
+      "實作自定義彈窗 (Modal)，用於編輯特定日期的開關與時段",
+      "管理 overrides 狀態，並在按下儲存時將整合後的資料送往後端"
+    ],
+    "acceptance": [
+      "點擊月曆日期能正確開啟 Popup 並載入當日設定",
+      "彈窗內的修改能即時反映在月曆的視覺修飾 (Modifiers) 上",
+      "儲存功能運作正常且與後端 API 對接成功"
+    ]
+  }
+]

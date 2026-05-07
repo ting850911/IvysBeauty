@@ -69,7 +69,7 @@ export function Navbar() {
                 ) : (
                   <Link href="/history" className="block px-4 py-3 text-sm hover:bg-accent-primary/5 transition-colors">預約紀錄</Link>
                 )}
-                <button onClick={logout} className="w-full text-left px-4 py-3 text-sm text-destructive hover:bg-destructive/5 transition-colors">登出</button>
+                <button onClick={logout} className="w-full text-left px-4 py-3 text-sm text-destructive hover:bg-destructive/5 transition-colors cursor-pointer">登出</button>
               </div>
             </div>
           ) : (
@@ -153,7 +153,7 @@ export function Navbar() {
               )}
               <button
                 onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                className="text-left text-sm font-medium text-destructive transition-colors hover:text-destructive/80 py-3"
+                className="text-left text-sm font-medium text-destructive transition-colors hover:text-destructive/80 py-3 cursor-pointer"
               >
                 登出
               </button>

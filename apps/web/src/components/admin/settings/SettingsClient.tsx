@@ -20,37 +20,6 @@ interface Props {
   initialServices: AdminService[];
 }
 
-function formatDisplayHours(hours: any): string {
-  if (!hours) return "未設定營業時間";
-
-  if (!Array.isArray(hours)) {
-    return hours.display || "未設定營業時間";
-  }
-
-  const openDays = hours.filter((h: any) => h.isOpen);
-  if (openDays.length === 0) return "暫停營業";
-
-  const getDayString = (d: any) => {
-    if (d.hasBreak && d.breakStart && d.breakEnd) {
-      return `${d.openTime}-${d.closeTime} (休 ${d.breakStart}-${d.breakEnd})`;
-    }
-    return `${d.openTime} - ${d.closeTime}`;
-  };
-
-  const firstTimeString = getDayString(openDays[0]);
-  const allSame = openDays.every((d: any) => getDayString(d) === firstTimeString);
-
-  if (allSame) {
-    if (openDays.length === 7) return `每天 ${firstTimeString}`;
-    if (openDays.length > 2) {
-      return `${openDays[0].label}~${openDays[openDays.length - 1].label} ${firstTimeString}`;
-    }
-    return `${openDays.map((d: any) => d.label).join(", ")} ${firstTimeString}`;
-  }
-
-  return "多段時間 (請見詳情)";
-}
-
 export function SettingsClient({ initialLocations, initialStoreInfo, initialServices }: Props) {
   const router = useRouter();
   
@@ -360,7 +329,6 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
           toggleLocPublished={toggleLocPublished}
           setDeletingLocId={setDeletingLocId}
           setIsDeleteLocModalOpen={setIsDeleteLocModalOpen}
-          formatDisplayHours={formatDisplayHours}
         />
 
         <div className="h-px bg-border/50 w-full mb-8"></div>

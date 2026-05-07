@@ -30,13 +30,26 @@ model Location {
   address        String  
   imageUrls      String[]    @default([]) // 店內照片(多張)
   isPublished    Boolean     @default(true) // 是否上架/發佈
-  openingHours   Json?       // 營業時間 (包含 isOpen, openTime, closeTime, hasBreak, breakStart, breakEnd)
-  vacationDays   DateTime[]  // 休假日
   bookings       Booking[]  
   services       Service[]  
   portfolios     Portfolio[]  
+  schedules      MonthlySchedule[] // 每月排程
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @default(now()) @updatedAt
+}
+
+// 2.5 每月排程 (Monthly Schedules)
+model MonthlySchedule {
+  id          String   @id @default(cuid())
+  locationId  String
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  month       String   // 格式: "YYYY-MM"
+  all         Json     // 該月的固定營業時間範本 (DailyHour[])
+  overrides   Json     // 該月的特定日期例外 (Record<string, DailyHour>)
+  
+  @@unique([locationId, month]) // 每個據點每個月只有一份排程
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // 2. 服務項目  

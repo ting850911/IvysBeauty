@@ -10,7 +10,6 @@ interface LocationSectionProps {
   toggleLocPublished: (id: string) => void;
   setDeletingLocId: (id: string) => void;
   setIsDeleteLocModalOpen: (open: boolean) => void;
-  formatDisplayHours: (hours: any) => string;
 }
 
 export function LocationSection({
@@ -19,7 +18,6 @@ export function LocationSection({
   toggleLocPublished,
   setDeletingLocId,
   setIsDeleteLocModalOpen,
-  formatDisplayHours,
 }: LocationSectionProps) {
   return (
     <div className="mb-12">
@@ -36,7 +34,6 @@ export function LocationSection({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {locations.map((loc) => {
-          const displayHours = formatDisplayHours(loc.openingHours);
           return (
             <div key={loc.id} className="bg-background border border-border/80 rounded-[24px] flex flex-col relative transition-shadow hover:shadow-soft overflow-hidden">
               {loc.imageUrls && loc.imageUrls.length > 0 && (
@@ -57,10 +54,6 @@ export function LocationSection({
                   <div className="flex items-start gap-3 text-muted-foreground text-sm">
                     <MapPin size={16} className="shrink-0 mt-0.5 opacity-70" />
                     <span className="leading-relaxed font-medium">{loc.address}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                    <Clock size={16} className="shrink-0 opacity-70" />
-                    <span className="font-medium">{displayHours}</span>
                   </div>
                 </div>
                 <div className="h-px bg-border/50 w-full mb-4"></div>

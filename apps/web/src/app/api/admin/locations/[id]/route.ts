@@ -33,16 +33,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const { id } = await params;
     const body = await req.json();
-    const { name, address, imageUrls, openingHours, vacationDays } = body;
+    const { name, address, imageUrls, isPublished } = body;
 
     const location = await prisma.location.update({
-      where: { id },
+      where: { id: id },
       data: {
         name,
         address,
         imageUrls,
-        openingHours,
-        vacationDays,
+        isPublished,
       },
     });
 

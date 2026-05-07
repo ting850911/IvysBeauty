@@ -93,13 +93,13 @@ export function HeroForm({ initialData, allContent, onChange }: HeroFormProps) {
   const moveImage = (index: number, direction: 'left' | 'right') => {
     const newUrls = [...(initialData.imageUrls || [])];
     const targetIndex = direction === 'left' ? index - 1 : index + 1;
-    
+
     if (targetIndex < 0 || targetIndex >= newUrls.length) return;
-    
+
     const temp = newUrls[index];
     newUrls[index] = newUrls[targetIndex];
     newUrls[targetIndex] = temp;
-    
+
     onChange({ ...initialData, imageUrls: newUrls });
   };
 
@@ -141,7 +141,7 @@ export function HeroForm({ initialData, allContent, onChange }: HeroFormProps) {
               onChange={e => onChange({ ...initialData, description: e.target.value })}
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-wider flex items-center justify-between">
               <span>Banner 圖片 ({initialData.imageUrls?.length || 0}/3)</span>
@@ -198,13 +198,13 @@ export function HeroForm({ initialData, allContent, onChange }: HeroFormProps) {
                       <span className="text-sm">上傳圖片</span>
                     </div>
                   )}
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    className="hidden" 
-                    accept="image/*" 
-                    multiple 
-                    onChange={handleFileUpload} 
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileUpload}
                   />
                 </div>
               )}

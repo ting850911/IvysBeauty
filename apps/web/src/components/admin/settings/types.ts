@@ -15,8 +15,6 @@ export interface AdminLocation {
   address: string;
   imageUrls?: string[];
   isPublished: boolean;
-  openingHours: any;
-  vacationDays: string[];
 }
 
 export interface LocationOption {

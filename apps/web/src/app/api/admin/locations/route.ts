@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, address, imageUrls, openingHours, vacationDays } = body;
+    const { name, address, imageUrls } = body;
 
     if (!name || !address) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -35,8 +35,6 @@ export async function POST(req: NextRequest) {
         name,
         address,
         imageUrls: imageUrls || [],
-        openingHours: openingHours || [],
-        vacationDays: vacationDays || [],
       },
     });
 

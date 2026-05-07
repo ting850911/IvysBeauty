@@ -1,13 +1,14 @@
 export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "DONE" | "MISSED";
 
 export interface DailyHour {
+  label?: string;
   dayOfWeek: number;
   isOpen: boolean;
   openTime: string;
   closeTime: string;
-  hasBreak?: boolean;
-  breakStart?: string;
-  breakEnd?: string;
+  hasBreak: boolean;
+  breakStart: string;
+  breakEnd: string;
 }
 
 export interface User {
@@ -24,8 +25,12 @@ export interface Location {
   name: string;
   address: string;
   phone: string;
-  openingHours?: DailyHour[];
-  vacationDays?: Date[];
+  imageUrls?: string[];
+  isPublished?: boolean;
+  openingHours?: {
+    all: DailyHour[];
+    overrides: Record<string, DailyHour>;
+  };
 }
 
 export interface Service {

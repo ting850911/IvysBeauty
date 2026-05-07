@@ -189,7 +189,7 @@ export function NoticeForm({ initialData, allContent, onChange }: NoticeFormProp
         <Button
           onClick={handleSave}
           disabled={isSaving}
-          className="gap-2 rounded-full px-10 shadow-lg shadow-accent-primary/10"
+          className="gap-2 rounded-full px-8 shadow-lg shadow-accent-primary/10"
         >
           {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
           {isSaving ? "儲存中..." : "儲存 "}

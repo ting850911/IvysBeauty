@@ -1,8 +1,10 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Loader2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AdminStoreInfo } from "./types";
+import { useRouter } from "next/navigation";
 
 interface StoreInfoSectionProps {
   storeInfo: AdminStoreInfo;
@@ -17,6 +19,36 @@ export function StoreInfoSection({
   handleSaveStoreInfo,
   isSavingStoreInfo,
 }: StoreInfoSectionProps) {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const router = useRouter();
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/admin/home-content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...storeInfo,
+        }),
+      });
+
+      if (res.ok) {
+        alert("預約需知儲存成功！");
+        router.refresh();
+      } else {
+        const error = await res.json();
+        alert(`儲存失敗: ${error.message || "未知錯誤"}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("儲存過程中發生系統錯誤");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="mb-12">
       <div className="flex items-center gap-3 mb-4">
@@ -113,10 +145,14 @@ export function StoreInfoSection({
             />
           </div>
         </div>
-        <div className="flex justify-end pt-1">
-          <Button type="submit" disabled={isSavingStoreInfo} className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-6">
-            {isSavingStoreInfo ? <Loader2 size={16} className="animate-spin mr-2" /> : null}
-            儲存
+        <div className="pt-6 flex justify-end">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="gap-2 rounded-full px-8 shadow-lg shadow-accent-primary/10"
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            {isSaving ? "儲存中..." : "儲存 "}
           </Button>
         </div>
       </form>
