@@ -150,7 +150,7 @@ export function DashboardClient({ initialBookings }: Props) {
                   {statusFilter}
                 </p>
                 <div className="flex items-baseline gap-3">
-                  <h4>{currentStatusLabel}清單</h4>
+                  <h5>{currentStatusLabel}清單</h5>
                 </div>
               </div>
               <div className="text-muted-foreground text-sm flex items-center justify-center font-serif text-lg">
@@ -171,7 +171,7 @@ export function DashboardClient({ initialBookings }: Props) {
                 <div>
                   <p className="text-eyebrow">TODAY</p>
                   <div className="flex items-baseline gap-3">
-                    <h4>今日預約</h4>
+                    <h5>今日預約</h5>
                     <span className="text-xs text-muted-foreground tracking-wide">{todayFormatted}</span>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export function DashboardClient({ initialBookings }: Props) {
                 <div>
                   <p className="text-eyebrow">UPCOMING</p>
                   <div className="flex items-baseline gap-3">
-                    <h4>未來一週</h4>
+                    <h5>未來一週</h5>
                     <span className="text-xs text-muted-foreground tracking-wide">{nextWeekStartFormatted} ~ {nextWeekEndFormatted}</span>
                   </div>
                 </div>

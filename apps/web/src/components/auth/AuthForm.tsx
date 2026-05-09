@@ -98,7 +98,7 @@ export function AuthForm() {
         <p className="text-eyebrow">
           {isMember ? "Welcome Back" : "Join Us"}
         </p>
-        <h3>{isMember ? "會員登入" : "註冊會員"}</h3>
+        <h5>{isMember ? "會員登入" : "註冊會員"}</h5>
         <p>
           {isMember
             ? "請先登入會員以接續預約流程"

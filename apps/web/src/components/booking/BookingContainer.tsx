@@ -32,7 +32,7 @@ export function BookingContainer() {
     <div className="space-y-10 animate-fade-in">
       <div className="mb-12 text-center animate-fade-up space-y-4">
         <p className="text-eyebrow">Reservation</p>
-        <h2>線上預約</h2>
+        <h4>線上預約</h4>
         <p>請跟隨下方步驟，完成預約</p>
       </div>
 

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toDate, formatInTimeZone } from 'date-fns-tz';
 import { useAuth } from '@/contexts/AuthContext';
 import { BookingData, Service, Location } from '@ivysbeauty/shared';
+import { AdminField, AdminInput, AdminTextarea } from '@/components/ui/admin-field';
 
 const INITIAL_DATA: BookingData = {
   location: null,
@@ -180,7 +181,7 @@ export function BookingProcess() {
           <Check size={40} />
         </div>
         <div className="space-y-3">
-          <h3 className="text-3xl">預約成功！</h3>
+          <h4 className="text-3xl">預約成功！</h4>
           <p className="text-muted-foreground text-lg">您的預約已送出，我們期待您的蒞臨。</p>
         </div>
 
@@ -202,7 +203,7 @@ export function BookingProcess() {
         <div className="space-y-6 pt-4">
           <div className="flex items-center gap-2 justify-center text-primary font-bold">
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <h5>匯款資訊</h5>
+            <h6>匯款資訊</h6>
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
           </div>
           <div className='bg-background rounded-3xl p-8 border border-primary/20 space-y-3 shadow-md text-left relative overflow-hidden'>
@@ -228,7 +229,7 @@ export function BookingProcess() {
   }
 
   return (
-    <div className='w-full max-w-2xl mx-auto bg-surface rounded-[2rem] shadow-soft p-6 md:p-10 border border-border/50'>
+    <div className='w-full max-w-2xl mx-auto bg-surface rounded-2xl shadow-md p-6 md:p-10'>
       <div className='mb-10 flex flex-col md:flex-row items-start md:items-center justify-between relative px-2'>
         <div className='absolute top-5 left-8 right-8 h-[2px] bg-border -z-10 hidden md:block' />
         <div className='absolute left-5 top-8 bottom-8 w-[2px] bg-border -z-10 md:hidden' />
@@ -283,7 +284,7 @@ export function BookingProcess() {
         {step === 1 && (
           <div className='space-y-6 animate-fade-in'>
             <div className='text-center space-y-2 mb-8'>
-              <h4>選擇工作室</h4>
+              <h5>選擇工作室</h5>
               <p>請問您希望在哪個地點進行服務呢？</p>
             </div>
             <div className='grid gap-4'>
@@ -311,7 +312,7 @@ export function BookingProcess() {
         {step === 2 && (
           <div className='space-y-6 animate-fade-in'>
             <div className='text-center space-y-2 mb-8'>
-              <h4>選擇服務</h4>
+              <h5>選擇服務</h5>
               <p>請問您想預約什麼項目呢？</p>
             </div>
             <div className='grid gap-4'>
@@ -347,7 +348,7 @@ export function BookingProcess() {
         {step === 3 && (
           <div className='space-y-8 animate-fade-in'>
             <div className='text-center space-y-2 mb-6'>
-              <h4>選擇時段</h4>
+              <h5>選擇時段</h5>
               <p>請選擇您方便的預約時間</p>
             </div>
 
@@ -426,7 +427,7 @@ export function BookingProcess() {
         {step === 4 && (
           <div className='space-y-6 animate-fade-in'>
             <div className='text-center space-y-2 mb-8'>
-              <h4>最後一步</h4>
+              <h5>最後一步</h5>
               <p>請確認預約資訊</p>
             </div>
 
@@ -446,29 +447,26 @@ export function BookingProcess() {
             </div>
 
             <div className='space-y-8'>
-              <div>
-                <label className='text-xs font-medium text-muted-foreground mb-1 block'>手機</label>
-                <input
+              <AdminField label="手機">
+                <AdminInput
                   type='tel'
                   value={data.customerPhone}
-                  onChange={(e) => setData((prev) => ({ ...prev, customerPhone: e.target.value }))}
-                  className='w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
+                  readOnly
                   placeholder='0912345678'
                 />
-              </div>
+              </AdminField>
 
-              <div className='text-sm'>
-                <label className='text-xs font-medium text-muted-foreground mb-1 block'>備註</label>
-                <textarea
+              <AdminField label="備註">
+                <AdminTextarea
                   value={data.remarks}
                   onChange={(e) => setData((prev) => ({ ...prev, remarks: e.target.value }))}
-                  className='w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
-                  placeholder='備註'
+                  placeholder='如有特殊需求請在此告知'
+                  rows={3}
                 />
-              </div>
+              </AdminField>
 
               <div>
-                <h5>匯款保留通知</h5>
+                <h6>匯款保留通知</h6>
                 <p className='text-sm'>
                   請於
                   <strong className='text-primary'>
@@ -476,7 +474,7 @@ export function BookingProcess() {
                   </strong>
                   至下方帳戶，並上傳匯款證明，謝謝。
                 </p>
-                <div className='mt-4 bg-background rounded-xl p-4 border border-border/50 space-y-1.5 shadow-sm'>
+                <div className='mt-4 bg-background rounded-xl p-3 space-y-1.5 shadow-md text-sm'>
                   <p>銀行代碼：{storeInfo?.bankCode || "013"} {storeInfo?.bankName || "國泰世華"}</p>
                   <p>匯款帳號：{storeInfo?.bankAccount || "1234-5678-9012-345"}</p>
                   <p>帳戶名稱：{storeInfo?.bankAccountName || "IvysBeauty Studio"}</p>
@@ -484,7 +482,7 @@ export function BookingProcess() {
               </div>
             </div>
 
-            <div className='flex justify-between items-center pt-6 mt-4 border-t border-border/50'>
+            <div className='flex justify-between items-center pt-6 mt-4 border-t border-border /50'>
               <Button variant='ghost' onClick={prevStep} className='text-muted-foreground'>
                 ← 返回修改時間
               </Button>

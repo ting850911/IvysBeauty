@@ -46,6 +46,7 @@ export function HeroSection({ data }: { data?: HeroData }) {
           fill
           className="object-cover object-center"
           priority
+          sizes="100vw"
         />
       </div>
 
@@ -54,9 +55,9 @@ export function HeroSection({ data }: { data?: HeroData }) {
           <p className="text-eyebrow">
             {content.eyebrow}
           </p>
-          <h1 className="leading-[1.05] drop-shadow-sm whitespace-pre-wrap">
+          <h3 className="leading-[1.05] drop-shadow-sm whitespace-pre-wrap">
             {content.title}
-          </h1>
+          </h3>
           <p className="max-w-md leading-relaxed">
             {content.description}
           </p>

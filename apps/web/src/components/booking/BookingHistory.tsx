@@ -71,17 +71,17 @@ export function BookingHistory() {
   const getStatusTag = (status: HistoryBooking["status"]) => {
     switch (status) {
       case "PENDING":
-        return <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600 border border-yellow-500/20">待匯款</span>;
+        return <span className="admin-tag admin-tag-warning">待匯款</span>;
       case "CONFIRMED":
-        return <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">預約成功</span>;
+        return <span className="admin-tag admin-tag-success">預約成功</span>;
       case "CANCELLED":
-        return <span className="px-3 py-1 rounded-full bg-gray-500/10 text-gray-600 border border-gray-500/20">已取消</span>;
+        return <span className="admin-tag admin-tag-muted">已取消</span>;
       case "DONE":
-        return <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 border border-blue-500/20">已完成</span>;
+        return <span className="admin-tag admin-tag-success">已完成</span>;
       case "MISSED":
-        return <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-600 border border-red-500/20">未出席</span>;
+        return <span className="admin-tag admin-tag-danger">未出席</span>;
       default:
-        return <span className="px-3 py-1 rounded-full bg-secondary text-secondary-foreground">{status}</span>;
+        return <span className="admin-tag admin-tag-muted">{status}</span>;
     }
   };
 
@@ -99,7 +99,7 @@ export function BookingHistory() {
     <div className="space-y-10 animate-fade-in">
       <div className="mb-12 text-center animate-fade-up space-y-4">
         <p className="text-eyebrow">History</p>
-        <h2>我的預約紀錄</h2>
+        <h4>我的預約紀錄</h4>
         <p>查看您的歷史預約與待付款項目</p>
         <div className='flex flex-col items-center gap-1'>
           <h5>匯款保留通知</h5>
@@ -117,7 +117,7 @@ export function BookingHistory() {
           <p className="text-muted-foreground mb-6">您還沒有預約過任何服務，快去預約專屬服務吧！</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           {bookings.map((booking) => {
             const startDate = new Date(booking.startTime);
             const dateString = formatInTimeZone(startDate, "Asia/Taipei", "yyyy-MM-dd");
@@ -128,8 +128,8 @@ export function BookingHistory() {
                 <div className="pl-2">
                   <div className="flex justify-between items-start mb-6 gap-4">
                     <div>
-                      <h4>{booking.service.name}</h4>
-                      <p>{booking.location.name}</p>
+                      <h6>{booking.service.name}</h6>
+                      <p className="text-sm">{booking.location.name}</p>
                     </div>
                     {getStatusTag(booking.status)}
                   </div>
@@ -146,9 +146,8 @@ export function BookingHistory() {
                   </div>
 
                   {booking.status === "PENDING" && (
-                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 mt-4">
-                      <p className="font-bold text-primary mb-1 flex items-center gap-1">待匯款訂金: NT$ {(booking.service.price * 0.3).toLocaleString()}
-                      </p>
+                    <div className="text-sm bg-background rounded-2xl p-4 mt-4 shadow-md">
+                      <h6 className="text-primary mb-1">待匯款訂金: NT$ {(booking.service.price * 0.3).toLocaleString()}</h6>
                       <p>提醒您，預約單送出後請於 24 小時內完成匯款，以免系統自動取消釋放名額。</p>
                     </div>
                   )}

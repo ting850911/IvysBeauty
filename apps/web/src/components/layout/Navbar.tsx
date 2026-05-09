@@ -6,6 +6,7 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -52,12 +53,24 @@ export function Navbar() {
 
         {/* CTA Button & Mobile Toggle Container */}
         <div className="flex items-center gap-4">
-          <Button size="sm" asChild className="rounded-full px-6 shadow-sm">
-            <Link href="/booking">立即預約</Link>
+          <Button 
+            size="sm" 
+            asChild={!isInitializing} 
+            disabled={isInitializing} 
+            className={cn(
+              "rounded-full px-6 shadow-sm transition-all",
+              isInitializing && "opacity-50 pointer-events-none"
+            )}
+          >
+            {isInitializing ? (
+              <span>立即預約</span>
+            ) : (
+              <Link href="/booking">立即預約</Link>
+            )}
           </Button>
 
           {isInitializing ? (
-            <div className="hidden md:block w-12 h-6 animate-pulse bg-muted/60 rounded-md"></div>
+            <span className="hidden md:block text-sm font-bold opacity-50 cursor-not-allowed">登入</span>
           ) : user ? (
             <div className="relative group hidden md:block">
               <button className="font-bold hover:text-primary transition-colors py-2 hover:cursor-pointer">
@@ -128,10 +141,7 @@ export function Navbar() {
             預約須知
           </Link>
           {isInitializing ? (
-            <div className="py-3 flex flex-col gap-3">
-              <div className="w-16 h-5 animate-pulse bg-muted/60 rounded"></div>
-              <div className="w-16 h-5 animate-pulse bg-muted/60 rounded"></div>
-            </div>
+            <span className="py-3 font-bold border-b border-border/50 opacity-50 cursor-not-allowed">登入</span>
           ) : user ? (
             <>
               {user.role === "OWNER" ? (

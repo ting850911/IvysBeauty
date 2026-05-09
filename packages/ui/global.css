@@ -91,59 +91,51 @@
   }
 
   h1 {
-    font-size: var(--text-5xl);
-
-    @media (min-width: 768px) {
-      @apply text-7xl;
-    }
+    font-size: var(--text-5xl, 6rem);
 
     @media screen and (max-width: 768px) {
-      @apply text-4xl;
+      font-size: var(--text-4xl, 5rem);
     }
   }
 
   h2 {
-    font-size: var(--text-4xl);
-
-    @media (min-width: 768px) {
-      @apply text-6xl;
-    }
+    font-size: var(--text-4xl, 5rem);
 
     @media screen and (max-width: 768px) {
-      @apply text-3xl;
+      font-size: var(--text-3xl, 4rem);
     }
   }
 
   h3 {
-    font-size: var(--text-3xl);
-
-    @media (min-width: 768px) {
-      @apply text-5xl;
-    }
+    font-size: var(--text-3xl, 4rem);
 
     @media screen and (max-width: 768px) {
-      @apply text-2xl;
+      font-size: var(--text-2xl, 3rem);
     }
   }
 
   h4 {
-    font-size: var(--text-2xl);
+    font-size: var(--text-2xl, 3rem);
 
     @media screen and (max-width: 768px) {
-      @apply text-4xl;
-    }
-
-    @media screen and (max-width: 768px) {
-      @apply text-xl;
+      font-size: var(--text-xl, 2rem);
     }
   }
 
   h5 {
-    font-size: var(--text-xl);
+    font-size: var(--text-xl, 2rem);
+
+    @media screen and (max-width: 768px) {
+      font-size: var(--text-base, 1rem);
+    }
   }
 
   h6 {
-    font-size: var(--text-lg);
+    font-size: var(--text-lg, 1rem);
+
+    @media screen and (max-width: 768px) {
+      font-size: var(--text-base, 0.8rem);
+    }
   }
 
   img {
@@ -153,12 +145,13 @@
 
   a {
     text-decoration: none;
-    color: inherit;
     cursor: pointer;
   }
 
-  button {
-    text-decoration: none;
+  button,
+  select,
+  input[type="checkbox"],
+  input[type="radio"] {
     cursor: pointer;
   }
 

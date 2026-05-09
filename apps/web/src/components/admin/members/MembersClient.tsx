@@ -202,40 +202,30 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
             title="本月新增會員"
             value={stats.newThisMonth.toLocaleString()}
             unit="人"
-            trend="+15.2%"
-            icon={<UserPlus className="text-primary" size={24} />}
+            icon={<UserPlus className="text-primary" size={20} />}
           />
           <StatCard
             title="活躍會員"
             value={stats.active.toLocaleString()}
             unit="人"
-            trend="+4.7%"
-            icon={<UserCheck className="text-primary" size={24} />}
+            icon={<UserCheck className="text-primary" size={20} />}
           />
 
           {/* Upcoming Birthdays Card */}
-          <div className="md:col-span-2 bg-white/80 backdrop-blur-md rounded-[32px] p-6 border border-border/40 shadow-sm">
+          <div className="md:col-span-2 rounded-3xl p-6 shadow-md">
             <div className="flex items-center justify-between mb-6">
-              <h6 className="flex items-center gap-2">
-                <Gift size={18} className="text-accent-secondary" />
-                即將生日會員
-              </h6>
+              <h5 className="flex items-center gap-2">
+                <Gift size={16} className="text-accent-secondary" />
+                本月壽星
+              </h5>
               <button className="text-xs text-primary hover:underline">查看全部</button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {upcomingBirthdays.slice(0, 4).map((member) => (
-                <div key={member.id} className="flex items-center justify-between group cursor-pointer hover:bg-surface/30 p-2 -mx-2 rounded-2xl transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-accent-secondary/10 flex items-center justify-center text-accent-secondary text-sm border border-accent-secondary/20">
-                      {member.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm">{member.name}</p>
-                      <p className="text-xs">{member.phone}</p>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {upcomingBirthdays.slice(0, 6).map((member) => (
+                <span key={member.id} className="admin-tag admin-tag-success">
+                  {member.name}
+                </span>
               ))}
             </div>
           </div>
@@ -243,7 +233,7 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 opacity-50" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 opacity-50" size={16} />
           <input
             type="text"
             placeholder="搜尋會員"
@@ -512,25 +502,29 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
   );
 }
 
-function StatCard({ title, value, unit, trend, icon }: { title: string, value: string, unit: string, trend: string, icon: React.ReactNode }) {
+function StatCard({ title, value, unit, trend, icon }: { title: string, value: string, unit: string, trend?: string, icon: React.ReactNode }) {
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-6 border border-border/40 shadow-sm group hover:shadow-md transition-all">
+    <div className="rounded-3xl p-6 shadow-md group">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center group-hover:scale-110 transition-transform">
+        <div className="p-3 rounded-2xl bg-surface flex items-center justify-center">
           {icon}
         </div>
-        <div className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs">
-          <TrendingUp size={10} />
-          {trend}
-        </div>
+        {trend && (
+          <div className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs">
+            <TrendingUp size={10} />
+            {trend}
+          </div>
+        )}
       </div>
       <div>
-        <p className="text-xs uppercase tracking-widest mb-1">{title}</p>
+        <h5>{title}</h5>
         <div className="flex items-baseline gap-1">
-          <h4 className="text-2xl font-black">{value}</h4>
+          <h5>{value}</h5>
           <span className="text-xs">{unit}</span>
         </div>
-        <p className="text-xs mt-2 font-medium">較上月 <span className="text-emerald-600">{trend}</span></p>
+        {trend && (
+          <p className="text-xs mt-2 font-medium">較上月 <span className="text-emerald-600">{trend}</span></p>
+        )}
       </div>
     </div>
   );

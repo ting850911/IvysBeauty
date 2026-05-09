@@ -51,7 +51,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
           const timeString = formatInTimeZone(dateObj, "Asia/Taipei", "HH:mm");
 
           return (
-            <div key={booking.id} className="bg-secondary/40 rounded-2xl p-5 grid gap-2 shadow-sm text-muted-foreground relative">
+            <div key={booking.id} className="bg-secondary/40 rounded-2xl p-5 grid gap-2 shadow-sm relative">
               <div className="border-b border-border/60 pb-2 text-sm">
                 {booking.location.name}
               </div>
@@ -98,7 +98,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
       <div className="hidden md:block w-full overflow-x-auto pb-4">
         <table className="w-full min-w-[800px] text-left border-collapse">
           <thead>
-            <tr className="border-b border-border/60 text-sm text-muted-foreground">
+            <tr className="border-b border-border/60 text-sm">
               <th className="py-4 px-4 pl-6">日期 / 時間</th>
               <th className="py-4 px-4">客人</th>
               <th className="py-4 px-4">項目</th>
@@ -116,7 +116,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
               const timeString = formatInTimeZone(dateObj, "Asia/Taipei", "HH:mm");
 
               return (
-                <tr key={booking.id} className="group hover:bg-black/[0.02] transition-colors text-sm text-muted-foreground">
+                <tr key={booking.id} className="group text-sm">
                   <td className="py-5 px-4 pl-6">
                     <div>{dateString}</div>
                     <div className="mt-0.5">{timeString}</div>

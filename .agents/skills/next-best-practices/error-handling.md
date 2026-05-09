@@ -22,7 +22,7 @@ export default function Error({
 }) {
   return (
     <div>
-      <h2>Something went wrong!</h2>
+      <h5>Something went wrong!</h5>
       <button onClick={() => reset()}>Try again</button>
     </div>
   )
@@ -48,7 +48,7 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <h2>Something went wrong!</h2>
+        <h5>Something went wrong!</h5>
         <button onClick={() => reset()}>Try again</button>
       </body>
     </html>
@@ -187,7 +187,7 @@ Custom 404 page for a route segment:
 export default function NotFound() {
   return (
     <div>
-      <h2>Not Found</h2>
+      <h5>Not Found</h5>
       <p>Could not find the requested resource</p>
     </div>
   )

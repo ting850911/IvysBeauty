@@ -8,17 +8,39 @@ interface PortfolioItem {
   id: string;
   title: string;
   imageUrls: string[];
-  description: string;
+  description: string | null;
   gender: string;
-  locationId: string;
-  serviceId: string;
+  locationId: string | null;
+  serviceId: string | null;
+  service?: { name: string };
+  location?: { name: string };
 }
 
-export function PortfolioGallery() {
-  const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [services, setServices] = useState<Record<string, string>>({});
-  const [locations, setLocations] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(true);
+export function PortfolioGallery({
+  initialItems,
+  initialServices,
+  initialLocations
+}: {
+  initialItems?: PortfolioItem[],
+  initialServices?: any[],
+  initialLocations?: any[]
+}) {
+  const [items, setItems] = useState<PortfolioItem[]>(initialItems || []);
+
+  // Helper to map services/locations array to Record
+  const mapToRecord = (arr: any[]) => {
+    const map: Record<string, string> = {};
+    arr?.forEach((item: any) => { map[item.id] = item.name; });
+    return map;
+  };
+
+  const [services, setServices] = useState<Record<string, string>>(
+    initialServices ? mapToRecord(initialServices) : {}
+  );
+  const [locations, setLocations] = useState<Record<string, string>>(
+    initialLocations ? mapToRecord(initialLocations) : {}
+  );
+  const [isLoading, setIsLoading] = useState(!initialItems);
 
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const [locationFilter, setLocationFilter] = useState<string>("all");
@@ -59,8 +81,10 @@ export function PortfolioGallery() {
       }
     };
 
+    if (initialItems && initialServices && initialLocations) return;
+
     fetchData();
-  }, []);
+  }, [initialItems, initialServices, initialLocations]);
 
   const GENDERS = {
     MALE: "男性",
@@ -128,11 +152,11 @@ export function PortfolioGallery() {
               <p className="text-eyebrow">
                 Portfolio
               </p>
-              <h2 className="leading-[1.1] drop-shadow-sm">
+              <h4 className="leading-[1.1] drop-shadow-sm">
                 每一道線條，
                 <br className="hidden sm:inline" />
                 都是慢下來的時光。
-              </h2>
+              </h4>
             </div>
             <div className="w-full flex items-center justify-between gap-4">
               <p>

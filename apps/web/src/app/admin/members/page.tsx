@@ -24,12 +24,13 @@ export default async function MembersPage() {
         createdAt: { gte: startMonth, lte: endMonth }
       }
     }),
-    (prisma.user as any).count({
+    (prisma.booking as any).groupBy({
+      by: ['customerId'],
       where: {
-        role: 'MEMBER',
-        lastVisit: { gte: addDays(now, -30) }
+        status: 'DONE',
+        startTime: { gte: addDays(now, -30) }
       }
-    }).catch(() => 0),
+    }).then((groups: any[]) => groups.length).catch(() => 0),
     (prisma.user as any).aggregate({
       where: { role: 'MEMBER' },
       _sum: { prepaidBalance: true }

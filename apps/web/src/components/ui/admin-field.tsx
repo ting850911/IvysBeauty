@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const inputBaseStyles = "w-full h-11 px-4 rounded-xl border border-border/60 bg-background shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm placeholder:text-muted-foreground/40";
-const readOnlyStyles = "opacity-50 cursor-not-allowed";
+const readOnlyStyles = "opacity-50 cursor-not-allowed focus:ring-0 focus:border-none hover:border-none";
 
 /**
  * AdminField - 標準化表單欄位外殼

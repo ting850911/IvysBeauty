@@ -57,14 +57,14 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
           <p className="text-eyebrow">
             {content.eyebrow}
           </p>
-          <h2 className="leading-[1.1] drop-shadow-sm">
+          <h4 className="leading-[1.1] drop-shadow-sm">
             {content.title}
-          </h2>
+          </h4>
           <div className="leading-relaxed max-w-2xl mx-auto text-muted-foreground whitespace-pre-wrap">
             {content.description}
           </div>
           <div className="bg-background/60 backdrop-blur-md shadow-soft p-8 rounded-3xl space-y-3 max-w-2xl mx-auto border border-white/20">
-            <h4>合法營業登記・全預約制</h4>
+            <h5>合法營業登記・全預約制</h5>
             <p>
               高隱私居家工作室，空間有限且服務皆為一對一。<br />
               為維持最高操作品質，<strong>謝絕攜伴</strong>，感謝您的配合！
@@ -79,9 +79,9 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
                 <p className="text-xs uppercase tracking-[0.4em] text-primary font-bold mb-4 drop-shadow-sm">
                   Location
                 </p>
-                <h2 className="leading-[1.1] drop-shadow-sm">
+                <h4 className="leading-[1.1] drop-shadow-sm">
                   專屬放鬆空間
-                </h2>
+                </h4>
               </div>
               <div className="space-y-6 text-muted-foreground">
                 {locations.length > 0 ? locations.map(loc => (
@@ -138,6 +138,7 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
                           alt={`Studio space ${index + 1}`}
                           fill
                           className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 40vw"
                         />
                       </CarouselItem>
                     ))}
@@ -150,6 +151,7 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
                   alt="Studio space"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 40vw"
                 />
               )}
             </div>

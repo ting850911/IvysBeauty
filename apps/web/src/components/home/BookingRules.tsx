@@ -36,15 +36,15 @@ export function BookingRules({ data }: { data?: BookingRulesData }) {
       <div className="max-w-2xl mx-auto rounded-[2rem] border border-border/50 p-8 md:p-10 space-y-10 animate-fade-up relative z-10 bg-background/30 backdrop-blur-sm">
         <div className="text-center space-y-4">
           <p className="text-eyebrow">{content.eyebrow}</p>
-          <h2>{content.title}</h2>
+          <h4>{content.title}</h4>
           <p className="mt-3 text-muted-foreground">{content.description}</p>
         </div>
 
         <div className="grid gap-8">
           {content.rules.map((rule, idx) => (
             <section key={idx} className="space-y-3">
-              <h4>{rule.title}</h4>
-              <div 
+              <h6>{rule.title}</h6>
+              <div
                 className="prose prose-sm max-w-none text-muted-foreground pl-1"
                 dangerouslySetInnerHTML={{ __html: rule.content }}
               />

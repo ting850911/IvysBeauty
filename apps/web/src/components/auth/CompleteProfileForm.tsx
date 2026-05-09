@@ -64,7 +64,7 @@ export function CompleteProfileForm() {
 
       <div className="text-center space-y-2 mb-8">
         <p className="text-eyebrow">Profile Completion</p>
-        <h3>完善會員資料</h3>
+        <h5>完善會員資料</h5>
         <p>為了後續能收到通知，請提供以下資訊。</p>
       </div>
 
