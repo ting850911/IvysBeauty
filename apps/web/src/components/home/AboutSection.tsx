@@ -46,9 +46,7 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
     description: data?.description
   };
 
-  const studioImages = locations.flatMap(l => l.imageUrls).length > 0
-    ? locations.flatMap(l => l.imageUrls)
-    : ["https://images.unsplash.com/photo-1629367494173-c78a56567877?w=800&q=80"];
+  const studioImages = locations.flatMap(l => l.imageUrls);
 
   return (
     <>

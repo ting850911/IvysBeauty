@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAuth } from "@/contexts/AuthContext";
 import { CompleteProfileForm } from "@/components/auth/CompleteProfileForm";
-import Image from "next/image";
-import bgImg2 from "@/assets/background_2.png";
 
 interface HistoryBooking {
   id: string;

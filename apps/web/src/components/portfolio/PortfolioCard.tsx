@@ -6,7 +6,6 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { cn } from "@/lib/utils";
 
 interface PortfolioCardProps {
   item: {
@@ -22,9 +21,7 @@ interface PortfolioCardProps {
 export function PortfolioCard({ item, index }: PortfolioCardProps) {
   const serviceName = item.service?.name || "未知項目";
   const locationName = item.location?.name || "未知地點";
-  const images = (item.imageUrls && item.imageUrls.length > 0)
-    ? item.imageUrls
-    : ["https://images.unsplash.com/photo-1629367494173-c78a56567877?w=800&q=80"];
+  const images = item.imageUrls || [];
 
   const plugin = React.useRef(
     Autoplay({ delay: 6000, stopOnInteraction: true })
@@ -32,7 +29,7 @@ export function PortfolioCard({ item, index }: PortfolioCardProps) {
 
   return (
     <figure
-      className="group relative overflow-hidden rounded-lg shadow-soft transition-all duration-500 hover:shadow-elevated animate-fade-up border border-border/30 delay-[var(--delay)]"
+      className="group relative overflow-hidden rounded-3xl shadow-soft transition-all duration-500 hover:shadow-elevated animate-fade-up border border-border/30 delay-[var(--delay)]"
       style={{ '--delay': `${index * 60}ms` } as React.CSSProperties}
     >
       <div className="aspect-[4/5] overflow-hidden relative">
