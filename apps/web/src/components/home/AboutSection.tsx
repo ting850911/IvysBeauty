@@ -88,16 +88,9 @@ export function AboutSection({ data, locations = [], storeInfo }: AboutSectionPr
                     <p>{loc.address}</p>
                   </div>
                 )) : (
-                  <>
-                    <div>
-                      <h6 className="mb-1">板橋工作室</h6>
-                      <p>新埔捷運站 1 號出口・步行 3 分鐘</p>
-                    </div>
-                    <div>
-                      <h6 className="mb-1">宜蘭工作室</h6>
-                      <p>宜蘭縣壯圍鄉永美路</p>
-                    </div>
-                  </>
+                  <div className="py-4 bg-surface/50 rounded-2xl px-6 border border-dashed border-border/60">
+                    <p className="text-sm italic">尚無預設地點資訊，請洽店家確認。</p>
+                  </div>
                 )}
                 <div>
                   <h6 className="mb-1">Social media</h6>

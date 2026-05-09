@@ -13,12 +13,12 @@ model StoreInfo {
   phone           String?
   line            String?
   instagram       String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
-  bankAccount     String?
-  bankAccountName String?
   bankCode        String?
   bankName        String?
+  bankAccount     String?
+  bankAccountName String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
   threads         String?
 }
 
@@ -26,10 +26,10 @@ model Location {
   id          String            @id @default(cuid())
   name        String
   address     String
-  createdAt   DateTime          @default(now())
-  isPublished Boolean           @default(true)
-  updatedAt   DateTime          @default(now()) @updatedAt
   imageUrls   String[]          @default([])
+  isPublished Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now()) @updatedAt
   bookings    Booking[]
   schedules   MonthlySchedule[]
   portfolios  Portfolio[]
@@ -54,9 +54,9 @@ model Service {
   name        String
   price       Int
   duration    Int
+  isPublished Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now()) @updatedAt
-  isPublished Boolean     @default(true)
   bookings    Booking[]
   portfolios  Portfolio[]
   locations   Location[]  @relation("LocationToService")
@@ -102,15 +102,15 @@ model Booking {
 
 model Portfolio {
   id          String    @id @default(cuid())
+  title       String    @default("未命名作品")
+  imageUrls   String[]  @default([])
   description String?
+  tags        String[]  @default([])
   gender      Gender    @default(FEMALE)
   locationId  String?
   serviceId   String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
-  tags        String[]  @default([])
-  title       String    @default("未命名作品")
-  imageUrls   String[]  @default([])
   location    Location? @relation(fields: [locationId], references: [id])
   service     Service?  @relation(fields: [serviceId], references: [id])
 }

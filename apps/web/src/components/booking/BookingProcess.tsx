@@ -62,7 +62,7 @@ export function BookingProcess() {
       const payload = {
         locationId: data.location,
         serviceId: data.service,
-        customerId: user?.id || 'temp-customer-id',
+        customerId: user?.id,
         customerName: data.customerName,
         customerPhone: data.customerPhone,
         startTime: toDate(`${data.date}T${data.time}:00`, { timeZone: 'Asia/Taipei' }).toISOString(),
@@ -208,8 +208,8 @@ export function BookingProcess() {
           </div>
           <div className='bg-background rounded-3xl p-8 border border-primary/20 space-y-3 shadow-md text-left relative overflow-hidden'>
             <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
-            <p className="flex justify-between"><span className="text-muted-foreground">銀行代碼</span> <span className="font-mono font-bold">{storeInfo?.bankCode || "013"} {storeInfo?.bankName || "國泰世華"}</span></p>
-            <p className="flex justify-between"><span className="text-muted-foreground">匯款帳號</span> <span className="font-mono font-bold tracking-wider">{storeInfo?.bankAccount || "1234-5678-9012-345"}</span></p>
+            <p className="flex justify-between"><span className="text-muted-foreground">銀行代碼</span> <span className="font-mono font-bold">{storeInfo?.bankCode || "-"} {storeInfo?.bankName || "(未設定)"}</span></p>
+            <p className="flex justify-between"><span className="text-muted-foreground">匯款帳號</span> <span className="font-mono font-bold tracking-wider">{storeInfo?.bankAccount || "請洽店家確認"}</span></p>
             <p className="flex justify-between"><span className="text-muted-foreground">帳戶名稱</span> <span className="font-bold">{storeInfo?.bankAccountName || "IvysBeauty Studio"}</span></p>
             <div className="mt-6 pt-6 border-t border-border/40 flex justify-between items-center">
               <span className="font-bold">訂金金額</span>
@@ -475,8 +475,8 @@ export function BookingProcess() {
                   至下方帳戶，並上傳匯款證明，謝謝。
                 </p>
                 <div className='mt-4 bg-background rounded-xl p-3 space-y-1.5 shadow-md text-sm'>
-                  <p>銀行代碼：{storeInfo?.bankCode || "013"} {storeInfo?.bankName || "國泰世華"}</p>
-                  <p>匯款帳號：{storeInfo?.bankAccount || "1234-5678-9012-345"}</p>
+                  <p>銀行代碼：{storeInfo?.bankCode || "-"} {storeInfo?.bankName || "(未設定)"}</p>
+                  <p>匯款帳號：{storeInfo?.bankAccount || "請洽店家確認"}</p>
                   <p>帳戶名稱：{storeInfo?.bankAccountName || "IvysBeauty Studio"}</p>
                 </div>
               </div>

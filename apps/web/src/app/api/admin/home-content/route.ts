@@ -19,6 +19,10 @@ export async function PUT(req: Request) {
       create: { id: "singleton", hero, about, notice },
     });
 
+    // Important: Revalidate the landing page cache
+    const { revalidatePath } = await import('next/cache');
+    revalidatePath('/');
+
     return NextResponse.json({ success: true, data: homeContent });
   } catch (error: any) {
     console.error("[HomeContent Update Error]", error);

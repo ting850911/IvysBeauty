@@ -41,6 +41,10 @@ export async function PUT(req: Request) {
       });
     }
 
+    // Revalidate the landing page cache
+    const { revalidatePath } = await import('next/cache');
+    revalidatePath('/');
+
     return NextResponse.json({ success: true, data: storeInfo });
   } catch (error: any) {
     console.error("[StoreInfo Update Error]", error);

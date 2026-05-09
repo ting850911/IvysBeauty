@@ -8,6 +8,9 @@ import { prisma } from "@ivysbeauty/database";
 
 // Best Practice: Page is a pure Server Component. 
 // We fetch all initial data in parallel on the server.
+// Force the page to be dynamic to ensure fresh data on every request
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const [homeContent, locations, storeInfo, portfolioItems, services] = await Promise.all([
     prisma.homeContent.findUnique({ where: { id: "singleton" } }),

@@ -113,9 +113,9 @@ export function HeroSection({ data }: { data?: HeroData }) {
             )}
           </div>
           <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-background px-6 py-4 shadow-soft md:block">
-            <p className="text-3xl leading-none text-primary">12k+</p>
+            <h6 className="leading-none text-primary">艾微美學</h6>
             <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">
-              Happy clients
+              Signature Brows
             </p>
           </div>
         </div>

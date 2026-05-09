@@ -101,8 +101,8 @@ export function BookingHistory() {
         <div className='flex flex-col items-center gap-1'>
           <h5>匯款保留通知</h5>
           <div className='mt-4 bg-background rounded-xl p-4 border border-border/50 space-y-1.5 shadow-sm'>
-            <p>銀行代碼：{storeInfo?.bankCode || "013"} {storeInfo?.bankName || "國泰世華"}</p>
-            <p>匯款帳號：{storeInfo?.bankAccount || "1234-5678-9012-345"}</p>
+            <p>銀行代碼：{storeInfo?.bankCode || "-"} {storeInfo?.bankName || "(未設定)"}</p>
+            <p>匯款帳號：{storeInfo?.bankAccount || "請洽店家確認"}</p>
             <p>帳戶名稱：{storeInfo?.bankAccountName || "IvysBeauty Studio"}</p>
           </div>
         </div>

@@ -45,7 +45,7 @@ export function BookingRules({ data }: { data?: BookingRulesData }) {
             <section key={idx} className="space-y-3">
               <h6>{rule.title}</h6>
               <div
-                className="prose prose-sm max-w-none text-muted-foreground pl-1"
+                className="prose prose-sm text-sm"
                 dangerouslySetInnerHTML={{ __html: rule.content }}
               />
             </section>
