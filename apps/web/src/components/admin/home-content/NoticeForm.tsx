@@ -8,6 +8,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import { useRouter } from "next/navigation";
+import { AdminCard, AdminCardHeader, AdminCardContent, AdminCardFooter, AdminField, AdminInput } from "../shared/AdminCard";
 
 // A clean, standard Tiptap editor component for each rule
 function RuleEditor({
@@ -111,90 +112,92 @@ export function NoticeForm({ initialData, allContent, onChange }: NoticeFormProp
   };
 
   return (
-    <div className="bg-background rounded-3xl p-6 space-y-6 animate-fade-in flex flex-col">
-      <div className="flex-1 space-y-6">
-        <div className="space-y-2">
-          <h5>預約需知設定</h5>
-          <p className="text-sm">設定預約流程中的注意事項與規範。</p>
-        </div>
+    <AdminCard>
+      <AdminCardHeader
+        title="預約需知設定"
+        description="設定預約流程中的注意事項與規範。"
+      />
 
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider ">標語</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.eyebrow}
-              onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">主標題</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.title}
-              onChange={e => onChange({ ...initialData, title: e.target.value })}
-            />
-          </div>
+      <AdminCardContent>
+        <AdminField label="小標">
+          <AdminInput
+            value={initialData.eyebrow}
+            onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
+            placeholder="例如：NOTICE"
+          />
+        </AdminField>
 
-          <div className="space-y-6">
-            {initialData.rules.map((rule, idx) => (
-              <div key={idx} className="group relative space-y-4 border-t border-border/50 pt-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <label className="text-xs font-bold uppercase tracking-wider">章節標題</label>
-                    <input
-                      className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
+        <AdminField label="主標題">
+          <AdminInput
+            value={initialData.title}
+            onChange={e => onChange({ ...initialData, title: e.target.value })}
+            placeholder="例如：預約需知"
+          />
+        </AdminField>
+
+        <div className="space-y-6 pt-4">
+          {initialData.rules.map((rule, idx) => (
+            <div key={idx} className="group relative space-y-4 border-t border-border pt-6">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <AdminField label={`章節 ${idx + 1} 標題`}>
+                    <AdminInput
                       value={rule.title}
                       onChange={e => {
                         const newRules = [...initialData.rules];
                         newRules[idx].title = e.target.value;
                         onChange({ ...initialData, rules: newRules });
                       }}
+                      placeholder="請輸入章節標題..."
                     />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeRule(idx)}
-                    className="p-2 hover:text-red-600 transition-all self-end"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  </AdminField>
                 </div>
-
-                <div className="space-y-1">
-                  <RuleEditor
-                    content={rule.content}
-                    onChange={html => {
-                      const newRules = [...initialData.rules];
-                      newRules[idx].content = html;
-                      onChange({ ...initialData, rules: newRules });
-                    }}
-                  />
-                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeRule(idx)}
+                  className="h-11 w-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 self-end shrink-0"
+                >
+                  <Trash2 size={18} />
+                </Button>
               </div>
-            ))}
-          </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">內容編輯</label>
+                <RuleEditor
+                  content={rule.content}
+                  onChange={html => {
+                    const newRules = [...initialData.rules];
+                    newRules[idx].content = html;
+                    onChange({ ...initialData, rules: newRules });
+                  }}
+                />
+              </div>
+            </div>
+          ))}
 
           <Button
             variant="outline"
             onClick={addRule}
-            className="w-full border-dashed rounded-2xl h-14  hover:text-primary transition-colors"
+            className="w-full border-dashed border-2 rounded-2xl h-16 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-muted-foreground gap-2"
           >
-            <Plus size={18} className="mr-2" /> 新增章節
+            <Plus size={18} />
+            新增需知章節
           </Button>
         </div>
-      </div>
+      </AdminCardContent>
 
-      <div className="pt-6 flex justify-end">
+      <AdminCardFooter>
         <Button
           onClick={handleSave}
           disabled={isSaving}
-          className="gap-2 rounded-full px-8 shadow-lg shadow-accent-primary/10"
+          className="gap-2 rounded-full px-8 shadow-lg shadow-primary/10"
         >
           {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-          {isSaving ? "儲存中..." : "儲存 "}
+          {isSaving ? "儲存中..." : "儲存設定"}
         </Button>
-      </div>
-    </div>
+      </AdminCardFooter>
+    </AdminCard>
   );
 }

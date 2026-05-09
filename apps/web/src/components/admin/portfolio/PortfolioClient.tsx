@@ -237,7 +237,7 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
         {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {portfolios.map((item) => (
-            <div key={item.id} className="bg-white/80 backdrop-blur-md rounded-[32px] border border-border/40 p-6 flex gap-6 hover:shadow-soft transition-all duration-300 relative group">
+            <div key={item.id} className="bg-white/80 backdrop-blur-md rounded-3xl border border-border/40 p-6 flex gap-6 hover:shadow-soft transition-all duration-300 relative group">
               {/* Image Thumbnail */}
               <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 rounded-3xl overflow-hidden relative border border-border/20 shadow-inner">
                 {item.imageUrls && item.imageUrls[0] ? (
@@ -256,25 +256,25 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
               </div>
 
               {/* Content Info */}
-              <div className="flex-1 flex flex-col justify-between py-1">
+              <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-2 opacity-80">
+                  <h5>{item.title}</h5>
+                  <p className="text-sm leading-relaxed mb-2 line-clamp-2">
                     {item.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  <div className="flex flex-wrap gap-2">
                     {item.service && (
-                      <span className="px-2.5 py-0.5 bg-primary/5 text-primary rounded-full text-[10px] font-medium border border-primary/10">
+                      <span className="admin-tag admin-tag-primary">
                         {item.service.name}
                       </span>
                     )}
                     {item.location && (
-                      <span className="px-2.5 py-0.5 bg-accent-primary/5 text-accent-primary rounded-full text-[10px] font-medium border border-accent-primary/10">
+                      <span className="admin-tag admin-tag-primary">
                         {item.location.name}
                       </span>
                     )}
-                    <span className="px-2.5 py-0.5 bg-surface text-muted-foreground rounded-full text-[10px] border border-border/40">
+                    <span className="admin-tag admin-tag-primary">
                       {genderMap[item.gender]}
                     </span>
                   </div>
@@ -295,8 +295,9 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
         </div>
 
         {portfolios.length === 0 && (
-          <div className="text-center py-24 bg-surface/30 rounded-[40px] border border-border/40 border-dashed">
-            <p className="text-muted-foreground tracking-widest text-sm italic">目前尚無作品，點擊上方按鈕開始創作吧！</p>
+          <div className="bg-surface rounded-3xl p-10 border border-border/50 text-center flex flex-col items-center">
+            <h5 className="mb-2">目前尚無作品</h5>
+            <p className="tracking-widest text-sm italic">目前尚無作品，點擊上方按鈕開始創作吧！</p>
           </div>
         )}
       </div>
@@ -441,6 +442,6 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
           </p>
         </div>
       </AdminModal>
-    </div>
+    </div >
   );
 }

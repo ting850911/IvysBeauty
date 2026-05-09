@@ -20,7 +20,7 @@ export function LocationSection({
   setIsDeleteLocModalOpen,
 }: LocationSectionProps) {
   return (
-    <div className="mb-12">
+    <div className="pb-6 border-b border-border/40">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">3</div>
@@ -35,7 +35,7 @@ export function LocationSection({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {locations.map((loc) => {
           return (
-            <div key={loc.id} className="bg-background border border-border/80 rounded-[24px] flex flex-col relative transition-shadow hover:shadow-soft overflow-hidden">
+            <div key={loc.id} className="bg-background rounded-xl shadow-md flex flex-col relative overflow-hidden">
               {loc.imageUrls && loc.imageUrls.length > 0 && (
                 <div className="w-full h-40 relative bg-muted/50 border-b border-border/50">
                   <img src={loc.imageUrls[0]} alt={loc.name} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
@@ -46,17 +46,13 @@ export function LocationSection({
                   )}
                 </div>
               )}
-              <div className="p-6 flex flex-col flex-1">
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold tracking-wide">{loc.name}</h3>
+              <div className="p-6 flex flex-col flex-1 gap-4">
+                <h6>{loc.name}</h6>
+                <div className="flex items-start gap-3 text-sm">
+                  <MapPin size={16} className="shrink-0 mt-0.5 opacity-70" />
+                  <span className="leading-relaxed">{loc.address}</span>
                 </div>
-                <div className="space-y-3 mb-6 flex-1">
-                  <div className="flex items-start gap-3 text-sm">
-                    <MapPin size={16} className="shrink-0 mt-0.5 opacity-70" />
-                    <span className="leading-relaxed">{loc.address}</span>
-                  </div>
-                </div>
-                <div className="h-px bg-border/50 w-full mb-4"></div>
+                <hr className="border-border/40" />
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <button
@@ -80,6 +76,6 @@ export function LocationSection({
           );
         })}
       </div>
-    </div>
+    </div >
   );
 }

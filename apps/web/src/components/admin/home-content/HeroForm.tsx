@@ -6,6 +6,7 @@ import { Save, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ImageUpload } from "../shared/ImageUpload";
+import { AdminCard, AdminCardHeader, AdminCardContent, AdminCardFooter, AdminField, AdminInput, AdminTextarea } from "../shared/AdminCard";
 
 interface HeroFormProps {
   initialData: HeroData;
@@ -110,68 +111,68 @@ export function HeroForm({ initialData, allContent, onChange }: HeroFormProps) {
   };
 
   return (
-    <div className="bg-background rounded-3xl p-6 space-y-6 animate-fade-in flex flex-col">
-      <div className="flex-1 space-y-6">
-        <div className="space-y-2">
-          <h5>Hero 區塊內容設定</h5>
-          <p className="text-sm">編輯首頁第一屏主要區塊，建議使用高品質圖片與簡潔有力的文字吸引訪客預約。</p>
-        </div>
+    <AdminCard>
+      <AdminCardHeader
+        title="Hero 區塊內容設定"
+        description="編輯首頁第一屏主要區塊，建議使用高品質圖片與簡潔有力的文字吸引訪客預約。"
+      />
 
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">標語</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.eyebrow}
-              onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">主標題</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.title}
-              onChange={e => onChange({ ...initialData, title: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">描述</label>
-            <textarea
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border min-h-[100px]"
-              value={initialData.description}
-              onChange={e => onChange({ ...initialData, description: e.target.value })}
-            />
-          </div>
+      <AdminCardContent>
+        <AdminField label="小標">
+          <AdminInput
+            value={initialData.eyebrow}
+            onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
+            placeholder="例如：優質美睫服務"
+          />
+        </AdminField>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider flex items-center justify-between">
+        <AdminField label="主標題">
+          <AdminInput
+            value={initialData.title}
+            onChange={e => onChange({ ...initialData, title: e.target.value })}
+            placeholder="例如：Ivy's Beauty"
+          />
+        </AdminField>
+
+        <AdminField label="描述內容">
+          <AdminTextarea
+            value={initialData.description}
+            onChange={e => onChange({ ...initialData, description: e.target.value })}
+            placeholder="請輸入首頁介紹文字..."
+            rows={4}
+          />
+        </AdminField>
+
+        <AdminField
+          label={
+            <div className="flex items-center justify-between w-full">
               <span>Banner 圖片 ({initialData.imageUrls?.length || 0}/3)</span>
               <span className="text-[10px] text-muted-foreground font-normal">建議尺寸 1920x1080</span>
-            </label>
+            </div>
+          }
+        >
+          <ImageUpload
+            imageUrls={initialData.imageUrls || []}
+            maxImages={3}
+            isUploading={isUploading}
+            onUpload={handleFileUpload}
+            onRemove={removeImage}
+            onMove={moveImage}
+            fileInputRef={fileInputRef}
+          />
+        </AdminField>
+      </AdminCardContent>
 
-            <ImageUpload
-              imageUrls={initialData.imageUrls || []}
-              maxImages={3}
-              isUploading={isUploading}
-              onUpload={handleFileUpload}
-              onRemove={removeImage}
-              onMove={moveImage}
-              fileInputRef={fileInputRef}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-6 flex justify-end">
+      <AdminCardFooter>
         <Button
           onClick={handleSave}
           disabled={isSaving}
-          className="gap-2 rounded-full px-8 shadow-lg shadow-accent-primary/10"
+          className="gap-2 rounded-full px-8 shadow-lg shadow-primary/10"
         >
           {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-          {isSaving ? "儲存中..." : "儲存 "}
+          {isSaving ? "儲存中..." : "儲存設定"}
         </Button>
-      </div>
-    </div>
+      </AdminCardFooter>
+    </AdminCard>
   );
 }

@@ -254,111 +254,109 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
         </div>
 
         {/* Member Table */}
-        <div className="bg-white/80 backdrop-blur-md rounded-xl border border-border/40 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-background">
-                  <th className="px-3 py-5 text-xs whitespace-nowrap">會員</th>
-                  <th className="px-3 py-5 text-xs whitespace-nowrap">聯絡方式</th>
-                  <th className="px-3 py-5 text-xs whitespace-nowrap">等級</th>
-                  <th
-                    className={`px-3 py-5 text-xs whitespace-nowrap cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'points' ? 'text-primary font-bold' : ''}`}
-                    onClick={() => handleSort('points')}
-                  >
-                    點數{renderSortIcon('points')}
-                  </th>
-                  <th
-                    className={`px-3 py-5 text-xs whitespace-nowrap cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'cumulativeSpending' ? 'text-primary font-bold' : ''}`}
-                    onClick={() => handleSort('cumulativeSpending')}
-                  >
-                    累積消費{renderSortIcon('cumulativeSpending')}
-                  </th>
-                  <th
-                    className={`px-3 py-5 text-xs whitespace-nowrap cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'visitCount' ? 'text-primary font-bold' : ''}`}
-                    onClick={() => handleSort('visitCount')}
-                  >
-                    到店次數{renderSortIcon('visitCount')}
-                  </th>
-                  <th className="px-3 py-5 text-xs whitespace-nowrap">上次到店</th>
-                  <th className="px-3 py-5 text-xs whitespace-nowrap">狀態</th>
-                  <th className="px-3 py-5 text-xs whitespace-nowrap text-right">操作</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/20">
-                {processedMembers.length > 0 ? (
-                  processedMembers.map((member) => (
-                    <tr key={member.id} className="text-sm whitespace-nowrap group">
-                      <td className="px-3 py-5">
+        <div className="rounded-xl overflow-hidden shadow-md">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-background text-xs whitespace-nowrap">
+                <th className="px-5 py-3">會員</th>
+                <th className="px-5 py-3">聯絡方式</th>
+                <th className="px-5 py-3">等級</th>
+                <th
+                  className={`px-5 py-3 cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'points' ? 'text-primary' : ''}`}
+                  onClick={() => handleSort('points')}
+                >
+                  點數{renderSortIcon('points')}
+                </th>
+                <th
+                  className={`px-5 py-3 cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'cumulativeSpending' ? 'text-primary' : ''}`}
+                  onClick={() => handleSort('cumulativeSpending')}
+                >
+                  累積消費{renderSortIcon('cumulativeSpending')}
+                </th>
+                <th
+                  className={`px-5 py-3 cursor-pointer hover:text-primary transition-colors ${sortConfig?.key === 'visitCount' ? 'text-primary' : ''}`}
+                  onClick={() => handleSort('visitCount')}
+                >
+                  到店次數{renderSortIcon('visitCount')}
+                </th>
+                <th className="px-5 py-3">上次到店</th>
+                <th className="px-5 py-3">狀態</th>
+                <th className="px-5 py-3 text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/40">
+              {processedMembers.length > 0 ? (
+                processedMembers.map((member) => (
+                  <tr key={member.id} className="text-sm whitespace-nowrap group">
+                    <td className="px-5 py-4">
+                      <button
+                        onClick={() => handleOpenHistory(member)}
+                        className="hover:text-primary"
+                      >
+                        {member.name}
+                      </button>
+                    </td>
+                    <td className="px-5 py-4">
+                      <p className="font-bold">{member.phone}</p>
+                      <p className="text-xs mt-0.5 text-ellipsis overflow-hidden max-w-[10rem] opacity-60">{member.email || '-'}</p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`admin-tag ${member.level === 'VIP會員' ? 'admin-tag-primary' :
+                        member.level === '白金會員' ? 'admin-tag-primary' :
+                          'admin-tag-muted'
+                        }`}>
+                        {member.level}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-primary">
+                      {member.points.toLocaleString()}
+                    </td>
+                    <td className="px-5 py-4 text-primary">
+                      {member.cumulativeSpending.toLocaleString()}
+                    </td>
+                    <td className="px-5 py-4">
+                      {member.visitCount}
+                    </td>
+                    <td className="px-5 py-4 text-xs">
+                      {member.lastVisit ? format(new Date(member.lastVisit), 'yyyy/MM/dd') : '-'}
+                    </td>
+                    <td className="px-5 py-4 text-xs">
+                      <span className={`admin-tag ${member.status === '啟用中' ? 'admin-tag-success' :
+                        member.status === '黑名單' ? 'admin-tag-danger' :
+                          'admin-tag-warning'
+                        }`}>
+                        {member.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-3">
                         <button
-                          onClick={() => handleOpenHistory(member)}
-                          className="hover:text-primary"
+                          onClick={() => handleOpenEdit(member)}
+                          className="hover:text-primary transition-colors"
+                          title="編輯會員"
                         >
-                          {member.name}
+                          <Pencil size={16} />
                         </button>
-                      </td>
-                      <td className="px-3 py-5">
-                        <p className="font-bold">{member.phone}</p>
-                        <p className="text-xs mt-0.5 text-ellipsis overflow-hidden max-w-[10rem] opacity-60">{member.email || '-'}</p>
-                      </td>
-                      <td className="px-3 py-5">
-                        <span className={`admin-tag ${member.level === 'VIP會員' ? 'admin-tag-primary' :
-                          member.level === '白金會員' ? 'admin-tag-primary' :
-                            'admin-tag-muted'
-                          }`}>
-                          {member.level}
-                        </span>
-                      </td>
-                      <td className="px-3 py-5 text-primary">
-                        {member.points.toLocaleString()}
-                      </td>
-                      <td className="px-3 py-5 text-primary">
-                        {member.cumulativeSpending.toLocaleString()}
-                      </td>
-                      <td className="px-3 py-5">
-                        {member.visitCount}
-                      </td>
-                      <td className="px-3 py-5 text-xs">
-                        {member.lastVisit ? format(new Date(member.lastVisit), 'yyyy/MM/dd') : '-'}
-                      </td>
-                      <td className="px-3 py-5 text-xs">
-                        <span className={`admin-tag ${member.status === '啟用中' ? 'admin-tag-success' :
-                          member.status === '黑名單' ? 'admin-tag-danger' :
-                            'admin-tag-warning'
-                          }`}>
-                          {member.status}
-                        </span>
-                      </td>
-                      <td className="px-3 py-5">
-                        <div className="flex justify-end gap-3">
-                          <button
-                            onClick={() => handleOpenEdit(member)}
-                            className="hover:text-primary transition-colors"
-                            title="編輯會員"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleOpenDelete(member.id)}
-                            className="hover:text-destructive transition-colors"
-                            title="刪除會員"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9} className="px-6 py-20 text-center">
-                      <p className="text-muted-foreground font-medium italic">找不到符合條件的會員</p>
+                        <button
+                          onClick={() => handleOpenDelete(member.id)}
+                          className="hover:text-destructive transition-colors"
+                          title="刪除會員"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={9} className="px-6 py-20 text-center">
+                    <p className="text-muted-foreground font-medium italic">找不到符合條件的會員</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

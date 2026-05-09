@@ -18,7 +18,7 @@ export function ServiceSection({
   setDeletingSrvId,
 }: ServiceSectionProps) {
   return (
-    <div className="mb-12">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">4</div>
@@ -30,28 +30,28 @@ export function ServiceSection({
         </Button>
       </div>
 
-      <div className="bg-background rounded-2xl border border-border/50 overflow-hidden">
+      <div className="rounded-xl overflow-hidden shadow-md">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-surface/50 border-b border-border/50 text-muted-foreground text-xs tracking-widest font-medium">
-              <th className="px-5 py-3 font-medium whitespace-nowrap">服務名稱</th>
-              <th className="px-5 py-3 font-medium whitespace-nowrap">時長</th>
-              <th className="px-5 py-3 font-medium whitespace-nowrap">價格</th>
-              <th className="px-5 py-3 font-medium whitespace-nowrap">提供地點</th>
-              <th className="px-5 py-3 font-medium whitespace-nowrap text-center">上架</th>
-              <th className="px-5 py-3 font-medium whitespace-nowrap text-right">操作</th>
+            <tr className="bg-background text-xs whitespace-nowrap">
+              <th className="px-5 py-3">服務名稱</th>
+              <th className="px-5 py-3">時長</th>
+              <th className="px-5 py-3">價格</th>
+              <th className="px-5 py-3">提供地點</th>
+              <th className="px-5 py-3 text-center">上架</th>
+              <th className="px-5 py-3 text-right">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40">
             {services.map((srv) => (
-              <tr key={srv.id} className="hover:bg-black/[0.01] transition-colors text-sm">
-                <td className="px-5 py-4 font-bold text-foreground">{srv.name}</td>
-                <td className="px-5 py-4 text-muted-foreground">{srv.duration} 分鐘</td>
-                <td className="px-5 py-4 font-mono font-medium text-foreground">NT$ {srv.price.toLocaleString()}</td>
+              <tr key={srv.id} className="text-sm">
+                <td className="px-5 py-4">{srv.name}</td>
+                <td className="px-5 py-4">{srv.duration} 分鐘</td>
+                <td className="px-5 py-4">NT$ {srv.price.toLocaleString()}</td>
                 <td className="px-5 py-4">
                   <div className="flex flex-wrap gap-1">
                     {srv.locations.length > 0 ? srv.locations.map(loc => (
-                      <span key={loc.id} className="text-[10px] px-1.5 py-0.5 bg-surface text-muted-foreground rounded border border-border/50">
+                      <span key={loc.id} className="admin-tag admin-tag-info">
                         {loc.name}
                       </span>
                     )) : (

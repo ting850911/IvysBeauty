@@ -4,6 +4,15 @@ import React, { ReactNode, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AdminField, AdminInput, AdminSelect, AdminTextarea } from "@/components/ui/admin-field";
+
+// Re-export shared components with Modal aliases for backward compatibility
+export { 
+  AdminField as ModalField, 
+  AdminInput as ModalInput, 
+  AdminSelect as ModalSelect, 
+  AdminTextarea as ModalTextarea 
+};
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -110,79 +119,5 @@ export function AdminModal({
         )}
       </div>
     </div>
-  );
-}
-
-// --- Helper Components for Uniform Styling ---
-
-export function ModalField({ label, children, className }: { label: React.ReactNode; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={cn("space-y-1.5", className)}>
-      <div className="text-sm">{label}</div>
-      {children}
-    </div>
-  );
-}
-
-const inputBaseStyles = "w-full h-11 px-4 rounded-xl border border-border/60 bg-background shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm placeholder:text-muted-foreground/40";
-const readOnlyStyles = "opacity-50 cursor-not-allowed";
-
-export function ModalInput({ 
-  className, 
-  readOnly, 
-  ...props 
-}: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input 
-      className={cn(
-        inputBaseStyles,
-        readOnly && readOnlyStyles,
-        className
-      )}
-      readOnly={readOnly}
-      {...props}
-    />
-  );
-}
-
-export function ModalSelect({ 
-  className, 
-  children, 
-  ...props 
-}: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <div className="relative">
-      <select 
-        className={cn(
-          inputBaseStyles,
-          "cursor-pointer appearance-none pr-10",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </select>
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-export function ModalTextarea({ 
-  className, 
-  ...props 
-}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return (
-    <textarea 
-      className={cn(
-        inputBaseStyles,
-        "h-auto py-3 rounded-xl resize-none",
-        className
-      )}
-      {...props}
-    />
   );
 }

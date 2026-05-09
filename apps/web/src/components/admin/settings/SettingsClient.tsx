@@ -311,7 +311,7 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="space-y-12 animate-fade-in">
+      <div className="space-y-8">
         {/* 1. Store Info Block */}
         <StoreInfoSection
           storeInfo={storeInfo}
@@ -319,8 +319,6 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
           handleSaveStoreInfo={handleSaveStoreInfo}
           isSavingStoreInfo={isSavingStoreInfo}
         />
-
-        <div className="h-px bg-border/50 w-full mb-8"></div>
 
         {/* 2. Locations Block */}
         <LocationSection
@@ -330,8 +328,6 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
           setDeletingLocId={setDeletingLocId}
           setIsDeleteLocModalOpen={setIsDeleteLocModalOpen}
         />
-
-        <div className="h-px bg-border/50 w-full mb-8"></div>
 
         {/* 3. Services Block */}
         <ServiceSection

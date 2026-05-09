@@ -323,14 +323,12 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
         {dateConfig && (
           <div className="space-y-8">
             {/* Status Toggle */}
-            <div className="flex items-center justify-between p-5 bg-surface/50 rounded-[24px] border border-border/10 shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3 rounded-xl shadow-sm">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-2xl transition-colors ${!dateConfig.isOpen ? "bg-primary text-white" : "bg-white text-muted-foreground shadow-sm"}`}>
-                  <Clock size={22} />
-                </div>
+                <Clock size={20} />
                 <div>
-                  <p className="text-sm font-bold text-foreground">當日營業狀態</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{dateConfig.isOpen ? "營業中" : "休假"}</p>
+                  <h6>是否營業</h6>
+                  <p className="text-xs">{dateConfig.isOpen ? "營業中" : "休假"}</p>
                 </div>
               </div>
               <button
@@ -349,24 +347,25 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
                     type="time"
                     value={dateConfig.openTime?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, openTime: e.target.value })}
-                    className="text-center font-medium"
+                    className="text-center"
                   />
                   <span className="text-muted-foreground font-bold">-</span>
                   <ModalInput
                     type="time"
                     value={dateConfig.closeTime?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, closeTime: e.target.value })}
-                    className="text-center font-medium"
+                    className="text-center"
                   />
                 </div>
               </ModalField>
 
               {/* Break Time */}
               <ModalField
-                className="pt-6 border-t border-border/20"
                 label={
-                  <div className="flex items-center justify-between w-full">
-                    <span>休息時段設定</span>
+                  <div className="flex items-center justify-between w-full mb-2">
+                    <label className="text-xs font-bold uppercase tracking-wider">
+                      休息時段設定
+                    </label>
                     <input
                       type="checkbox"
                       checked={dateConfig.hasBreak}
@@ -381,14 +380,14 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
                     type="time"
                     value={dateConfig.breakStart?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, breakStart: e.target.value })}
-                    className="text-center font-medium"
+                    className="text-center"
                   />
                   <span className="text-muted-foreground font-bold">-</span>
                   <ModalInput
                     type="time"
                     value={dateConfig.breakEnd?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, breakEnd: e.target.value })}
-                    className="text-center font-medium"
+                    className="text-center"
                   />
                 </div>
               </ModalField>

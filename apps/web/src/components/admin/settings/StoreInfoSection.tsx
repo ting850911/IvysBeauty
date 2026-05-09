@@ -5,6 +5,7 @@ import { Loader2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AdminStoreInfo } from "./types";
 import { useRouter } from "next/navigation";
+import { AdminField, AdminInput } from "@/components/ui/admin-field";
 
 interface StoreInfoSectionProps {
   storeInfo: AdminStoreInfo;
@@ -50,100 +51,90 @@ export function StoreInfoSection({
   };
 
   return (
-    <div className="mb-12">
+    <div className="pb-6 border-b border-border/40">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">1</div>
         <h5>聯絡資訊</h5>
       </div>
       <form onSubmit={handleSaveStoreInfo} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">主要聯絡手機</label>
-            <input
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+          <AdminField label="聯絡手機">
+            <AdminInput
               type="text"
               value={storeInfo.phone || ""}
               onChange={e => setStoreInfo({ ...storeInfo, phone: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-              placeholder="例如：0912-345-678"
+              placeholder="0912-345-678"
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">LINE 官方帳號</label>
-            <input
+          </AdminField>
+
+          <AdminField label="LINE 官方帳號">
+            <AdminInput
               type="text"
               value={storeInfo.line || ""}
               onChange={e => setStoreInfo({ ...storeInfo, line: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-              placeholder="例如：@ivysbeauty"
+              placeholder="https://line.me/R/ti/p/@016qduiu"
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Instagram 連結</label>
-            <input
+          </AdminField>
+
+          <AdminField label="Instagram 連結">
+            <AdminInput
               type="text"
               value={storeInfo.instagram || ""}
               onChange={e => setStoreInfo({ ...storeInfo, instagram: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-              placeholder="https://instagram.com/..."
+              placeholder="https://www.instagram.com/..."
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Threads 連結</label>
-            <input
+          </AdminField>
+
+          <AdminField label="Threads 連結">
+            <AdminInput
               type="text"
               value={storeInfo.threads || ""}
               onChange={e => setStoreInfo({ ...storeInfo, threads: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-              placeholder="https://threads.net/..."
+              placeholder="https://www.threads.com/..."
             />
-          </div>
+          </AdminField>
         </div>
 
         <div className="flex items-center gap-3 mb-4 mt-10">
           <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">2</div>
           <h5>匯款資訊 (用於預約通知)</h5>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">銀行代碼</label>
-            <input
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+          <AdminField label="銀行代碼">
+            <AdminInput
               type="text"
               value={storeInfo.bankCode || ""}
               onChange={e => setStoreInfo({ ...storeInfo, bankCode: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               placeholder="例如：013"
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">銀行名稱</label>
-            <input
+          </AdminField>
+
+          <AdminField label="銀行名稱">
+            <AdminInput
               type="text"
               value={storeInfo.bankName || ""}
               onChange={e => setStoreInfo({ ...storeInfo, bankName: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               placeholder="例如：國泰世華"
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">匯款帳號</label>
-            <input
+          </AdminField>
+
+          <AdminField label="匯款帳號">
+            <AdminInput
               type="text"
               value={storeInfo.bankAccount || ""}
               onChange={e => setStoreInfo({ ...storeInfo, bankAccount: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               placeholder="例如：1234-5678-..."
             />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">帳戶名稱</label>
-            <input
+          </AdminField>
+
+          <AdminField label="帳戶名稱">
+            <AdminInput
               type="text"
               value={storeInfo.bankAccountName || ""}
               onChange={e => setStoreInfo({ ...storeInfo, bankAccountName: e.target.value })}
-              className="w-full bg-background border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
               placeholder="例如：IvysBeauty Studio"
             />
-          </div>
+          </AdminField>
         </div>
         <div className="pt-6 flex justify-end">
           <Button

@@ -59,7 +59,7 @@ export function PortfolioFilter({
         <SlidersHorizontal className="w-4 h-4" />
         篩選
         {activeCount > 0 && (
-          <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
+          <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
             {activeCount}
           </span>
         )}

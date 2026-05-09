@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Save, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AdminCard, AdminCardHeader, AdminCardContent, AdminCardFooter, AdminField, AdminInput, AdminTextarea } from "../shared/AdminCard";
 
 interface AboutFormProps {
   initialData: AboutData;
@@ -44,50 +45,49 @@ export function AboutForm({ initialData, allContent, onChange }: AboutFormProps)
   };
 
   return (
-    <div className="bg-background rounded-3xl p-6 space-y-6 animate-fade-in flex flex-col">
-      <div className="flex-1 space-y-6">
-        <div className="space-y-2">
-          <h5>About 區塊內容設定</h5>
-          <p className="text-sm">介紹您的品牌理念與工作室特色。</p>
-        </div>
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">標語</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.eyebrow}
-              onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">主標題</label>
-            <input
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border"
-              value={initialData.title}
-              onChange={e => onChange({ ...initialData, title: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider">描述</label>
-            <textarea
-              className="w-full rounded-xl px-4 py-2.5 text-sm border border-border min-h-[150px]"
-              value={initialData.description}
-              onChange={e => onChange({ ...initialData, description: e.target.value })}
-            />
-          </div>
-        </div>
-      </div>
+    <AdminCard>
+      <AdminCardHeader
+        title="About 區塊內容設定"
+        description="介紹您的品牌理念與工作室特色。"
+      />
 
-      <div className="pt-6 flex justify-end">
+      <AdminCardContent>
+        <AdminField label="小標">
+          <AdminInput
+            value={initialData.eyebrow}
+            onChange={e => onChange({ ...initialData, eyebrow: e.target.value })}
+            placeholder="例如：關於我們"
+          />
+        </AdminField>
+
+        <AdminField label="主標題">
+          <AdminInput
+            value={initialData.title}
+            onChange={e => onChange({ ...initialData, title: e.target.value })}
+            placeholder="例如：最懂妳的美睫專家"
+          />
+        </AdminField>
+
+        <AdminField label="詳細介紹">
+          <AdminTextarea
+            value={initialData.description}
+            onChange={e => onChange({ ...initialData, description: e.target.value })}
+            placeholder="請輸入品牌故事或工作室介紹..."
+            rows={6}
+          />
+        </AdminField>
+      </AdminCardContent>
+
+      <AdminCardFooter>
         <Button
           onClick={handleSave}
           disabled={isSaving}
-          className="gap-2 rounded-full px-8 shadow-lg shadow-accent-primary/10"
+          className="gap-2 rounded-full px-8 shadow-lg shadow-primary/10"
         >
           {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-          {isSaving ? "儲存中..." : "儲存 "}
+          {isSaving ? "儲存中..." : "儲存設定"}
         </Button>
-      </div>
-    </div>
+      </AdminCardFooter>
+    </AdminCard>
   );
 }
