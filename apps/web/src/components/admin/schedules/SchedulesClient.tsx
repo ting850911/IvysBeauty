@@ -12,7 +12,7 @@ import {
   X,
   Loader2
 } from 'lucide-react';
-import { AdminModal } from '../shared/AdminModal';
+import { AdminModal, ModalField, ModalInput } from '../shared/AdminModal';
 import {
   format,
   addMonths,
@@ -74,7 +74,7 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
         if (res.ok) {
           const data = await res.json();
           const rawAll = data.all || [];
-          
+
           // Ensure we have 7 days initialized
           const finalAll = [1, 2, 3, 4, 5, 6, 0].map(dow => {
             const existing = rawAll.find((h: any) => h.dayOfWeek === dow);
@@ -88,7 +88,7 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
               breakEnd: "13:00"
             };
           });
-          
+
           setAllHours(finalAll);
           setOverrides(data.overrides || {});
         }
@@ -172,7 +172,7 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
   if (!selectedLoc) return null;
 
   return (
-    <main className="max-w-5xl mx-auto py-2">
+    <main className="max-w-5xl mx-auto">
       {/* Top Header */}
       <div className='mb-6'>
         <select
@@ -219,14 +219,14 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
                   {isCurrentMonth && config && (
                     <div className="mt-2 space-y-1">
                       {isOff ? (
-                        <div className="text-xs py-1 px-1.5 rounded-md text-center border-muted border border-dashed text-muted-foreground">休息</div>
+                        <div className="text-xs text-muted-foreground text-center rounded-md py-1 px-1 border-muted border border-dashed">休息</div>
                       ) : (
                         <>
-                          <div className="text-xs bg-[#F0F7F0] text-[#2D5A27] border border-[#D5E6D5]/50 whitespace-nowrap overflow-hidden text-ellipsis px-1 rounded-sm">
+                          <div className="text-xs bg-emerald-50 text-emerald-600 whitespace-nowrap overflow-hidden text-ellipsis px-1">
                             {config.openTime?.slice(0, 5)} - {config.closeTime?.slice(0, 5)}
                           </div>
                           {config.hasBreak && (
-                            <div className="text-xs bg-[#FFF4E6] text-[#A35200] border border-[#FFE8CC]/50 whitespace-nowrap overflow-hidden text-ellipsis px-1 rounded-sm">
+                            <div className="text-xs bg-amber-50 text-amber-600 whitespace-nowrap overflow-hidden text-ellipsis px-1">
                               {config.breakStart?.slice(0, 5)} - {config.breakEnd?.slice(0, 5)}
                             </div>
                           )}
@@ -321,79 +321,77 @@ export function SchedulesClient({ initialLocations }: SchedulesClientProps) {
         confirmText="儲存"
       >
         {dateConfig && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Status Toggle */}
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-2xl">
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-xl ${!dateConfig.isOpen ? "bg-primary text-white" : "bg-white shadow-sm"}`}>
-                  <Clock size={20} />
+            <div className="flex items-center justify-between p-5 bg-surface/50 rounded-[24px] border border-border/10 shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-2xl transition-colors ${!dateConfig.isOpen ? "bg-primary text-white" : "bg-white text-muted-foreground shadow-sm"}`}>
+                  <Clock size={22} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">是否營業</p>
-                  <p className="text-xs text-muted-foreground">{dateConfig.isOpen ? "營業中" : "休假"}</p>
+                  <p className="text-sm font-bold text-foreground">當日營業狀態</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{dateConfig.isOpen ? "營業中" : "休假"}</p>
                 </div>
               </div>
               <button
                 onClick={() => setDateConfig({ ...dateConfig, isOpen: !dateConfig.isOpen })}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${dateConfig.isOpen ? "bg-primary" : "bg-muted"}`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${dateConfig.isOpen ? "bg-primary" : "bg-muted"}`}
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${dateConfig.isOpen ? "translate-x-6" : "translate-x-1"}`} />
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${dateConfig.isOpen ? "translate-x-6" : "translate-x-1"}`} />
               </button>
             </div>
 
-            <div className={`space-y-6 transition-all duration-300 ${!dateConfig.isOpen ? "opacity-30 pointer-events-none grayscale" : "opacity-100"}`}>
+            <div className={`space-y-8 transition-all duration-500 ${!dateConfig.isOpen ? "opacity-30 pointer-events-none grayscale blur-[1px]" : "opacity-100"}`}>
               {/* Business Hours */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-primary font-bold text-sm">
-                  <Clock size={16} /> 營業時段
-                </div>
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                  <input
+              <ModalField label="營業時段設定">
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+                  <ModalInput
                     type="time"
                     value={dateConfig.openTime?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, openTime: e.target.value })}
-                    className="h-9 bg-white border border-border/80 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-center shadow-sm text-foreground"
+                    className="text-center font-medium"
                   />
-                  <span className="text-muted-foreground">-</span>
-                  <input
+                  <span className="text-muted-foreground font-bold">-</span>
+                  <ModalInput
                     type="time"
                     value={dateConfig.closeTime?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, closeTime: e.target.value })}
-                    className="h-9 bg-white border border-border/80 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-center shadow-sm text-foreground"
+                    className="text-center font-medium"
                   />
                 </div>
-              </div>
+              </ModalField>
 
               {/* Break Time */}
-              <div className="pt-4 border-t border-border/50 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-primary font-bold text-sm">
-                    <Clock size={16} /> 休息時段
+              <ModalField
+                className="pt-6 border-t border-border/20"
+                label={
+                  <div className="flex items-center justify-between w-full">
+                    <span>休息時段設定</span>
+                    <input
+                      type="checkbox"
+                      checked={dateConfig.hasBreak}
+                      onChange={(e) => setDateConfig({ ...dateConfig, hasBreak: e.target.checked })}
+                      className="w-5 h-5 rounded-lg border-border/60 text-primary accent-primary cursor-pointer transition-all"
+                    />
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={dateConfig.hasBreak}
-                    onChange={(e) => setDateConfig({ ...dateConfig, hasBreak: e.target.checked })}
-                    className="w-5 h-5 rounded border-border text-primary accent-primary cursor-pointer"
-                  />
-                </div>
-
-                <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-3 transition-all ${!dateConfig.hasBreak ? "opacity-30 pointer-events-none" : ""}`}>
-                  <input
+                }
+              >
+                <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-4 transition-all duration-300 ${!dateConfig.hasBreak ? "opacity-30 pointer-events-none" : ""}`}>
+                  <ModalInput
                     type="time"
                     value={dateConfig.breakStart?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, breakStart: e.target.value })}
-                    className="h-9 bg-white border border-border/80 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-center shadow-sm text-foreground"
+                    className="text-center font-medium"
                   />
-                  <span className="text-muted-foreground">-</span>
-                  <input
+                  <span className="text-muted-foreground font-bold">-</span>
+                  <ModalInput
                     type="time"
                     value={dateConfig.breakEnd?.slice(0, 5)}
                     onChange={(e) => setDateConfig({ ...dateConfig, breakEnd: e.target.value })}
-                    className="h-9 bg-white border border-border/80 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-center shadow-sm text-foreground"
+                    className="text-center font-medium"
                   />
                 </div>
-              </div>
+              </ModalField>
             </div>
           </div>
         )}

@@ -69,7 +69,7 @@ export default function HomeContentPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-2">
+    <div className="max-w-5xl mx-auto">
       <main className="flex flex-col overflow-auto">
         <div className="flex-1 flex gap-8">
           {/* Left Form Area */}
@@ -83,7 +83,7 @@ export default function HomeContentPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === tab.id
+                  className={`px-6 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === tab.id
                     ? "bg-white text-accent-primary shadow-sm"
                     : "hover:bg-white/60"
                     }`}

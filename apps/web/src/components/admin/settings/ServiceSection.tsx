@@ -71,9 +71,9 @@ export function ServiceSection({
                   </button>
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <div className="flex items-center justify-end gap-3 text-muted-foreground">
-                    <button onClick={() => handleOpenSrvEdit(srv)} className="hover:text-primary transition-colors cursor-pointer"><Pencil size={16} /></button>
-                    <button onClick={() => setDeletingSrvId(srv.id)} className="hover:text-destructive transition-colors cursor-pointer"><Trash2 size={16} /></button>
+                  <div className="flex items-center justify-end gap-3">
+                    <button onClick={() => handleOpenSrvEdit(srv)} className="hover:text-primary transition-colors" title="編輯服務"><Pencil size={16} /></button>
+                    <button onClick={() => setDeletingSrvId(srv.id)} className="hover:text-destructive transition-colors" title="刪除服務"><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

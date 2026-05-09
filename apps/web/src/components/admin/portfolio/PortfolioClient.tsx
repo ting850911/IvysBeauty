@@ -2,9 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { AdminModal } from "../shared/AdminModal";
-import { DeleteConfirmModal } from "../shared/DeleteConfirmModal";
-import { Plus, Pencil, Trash2, Loader2, X, ImagePlus } from "lucide-react";
+import {
+  AdminModal,
+  ModalField,
+  ModalInput,
+  ModalSelect,
+  ModalTextarea
+} from "../shared/AdminModal";
+import { ImageUpload } from "../shared/ImageUpload";
+import { Plus, Pencil, Trash2, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -48,12 +54,11 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
 
   // Loading & Action states
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [activeUploadIndex, setActiveUploadIndex] = useState<number | null>(null);
 
   const handleOpenEdit = (item?: AdminPortfolio) => {
     if (item) {
@@ -79,7 +84,6 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingItem(null);
-    setActiveUploadIndex(null);
   };
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -110,36 +114,37 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || activeUploadIndex === null) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
+      const newUrls = [...(editingItem?.imageUrls || [])];
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      // Upload files sequentially or in parallel
+      for (let i = 0; i < files.length; i++) {
+        if (newUrls.length >= 2) break;
 
-      const result = await res.json();
-      if (result.success) {
-        setEditingItem(prev => {
-          if (!prev) return prev;
-          const newUrls = [...(prev.imageUrls || [])];
-          newUrls[activeUploadIndex] = result.data.url;
-          return { ...prev, imageUrls: newUrls };
+        const formData = new FormData();
+        formData.append("file", files[i]);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
         });
-      } else {
-        alert(`圖片上傳失敗: ${result.error?.message || "未知錯誤"}`);
+
+        const result = await res.json();
+        if (result.success) {
+          newUrls.push(result.data.url);
+        }
       }
+
+      setEditingItem(prev => prev ? { ...prev, imageUrls: newUrls } : prev);
     } catch (err) {
       console.error("[Upload Error]", err);
-      alert("圖片上傳過程中發生系統錯誤");
+      alert("圖片上傳過程中發生錯誤");
     } finally {
       setIsUploading(false);
-      setActiveUploadIndex(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -148,8 +153,7 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
     e.preventDefault();
     if (!editingItem) return;
 
-    const validUrls = (editingItem.imageUrls || []).filter(url => !!url);
-    if (validUrls.length === 0) {
+    if ((editingItem.imageUrls || []).length === 0) {
       alert("請至少上傳一張作品圖片");
       return;
     }
@@ -166,7 +170,6 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
 
     const payload = {
       ...editingItem,
-      imageUrls: validUrls,
       tags: finalTags,
       locationId: editingItem.location?.id || null,
       serviceId: editingItem.service?.id || null,
@@ -195,7 +198,7 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
 
   const handleDelete = async () => {
     if (!deletingId) return;
-    setIsDeleting(true);
+    setIsSaving(true);
 
     try {
       const res = await fetch(`/api/admin/portfolio/${deletingId}`, {
@@ -203,15 +206,14 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
       });
 
       if (res.ok) {
+        setIsDeleteDialogOpen(false);
         setDeletingId(null);
         router.refresh();
-      } else {
-        alert("刪除失敗");
       }
     } catch (err) {
       alert("系統錯誤");
     } finally {
-      setIsDeleting(false);
+      setIsSaving(false);
     }
   };
 
@@ -222,72 +224,68 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-2">
+    <div className="max-w-5xl mx-auto">
       <div className="space-y-8 animate-fade-in">
-        {/* Header */}
-        <Button onClick={() => handleOpenEdit()} className="rounded-full gap-2 px-6">
-          <Plus size={18} className="mr-2" />
-          新增作品
-        </Button>
+        {/* Header Area */}
+        <div className="flex justify-start">
+          <Button onClick={() => handleOpenEdit()} className="rounded-full gap-2 px-6 shadow-sm hover:shadow-md transition-all">
+            <Plus size={18} />
+            新增作品
+          </Button>
+        </div>
 
         {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {portfolios.map((item) => (
-            <div key={item.id} className="bg-background rounded-[24px] border border-border/80 p-6 flex gap-6 hover:shadow-soft transition-all duration-300 relative group">
-              {/* Image */}
-              <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 rounded-2xl overflow-hidden relative border border-border/50">
+            <div key={item.id} className="bg-white/80 backdrop-blur-md rounded-[32px] border border-border/40 p-6 flex gap-6 hover:shadow-soft transition-all duration-300 relative group">
+              {/* Image Thumbnail */}
+              <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 rounded-3xl overflow-hidden relative border border-border/20 shadow-inner">
                 {item.imageUrls && item.imageUrls[0] ? (
                   <Image
                     src={item.imageUrls[0]}
                     alt={item.title}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                     unoptimized
                   />
                 ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center">
-                    <ImagePlus size={18} className="mb-1 text-primary/70" />
+                  <div className="w-full h-full bg-surface flex items-center justify-center">
+                    <Trash2 size={24} className="text-muted-foreground/20" />
                   </div>
                 )}
               </div>
 
-              {/* Content */}
-              <div className="flex-1 flex flex-col justify-between">
+              {/* Content Info */}
+              <div className="flex-1 flex flex-col justify-between py-1">
                 <div>
-                  <h3 className="text-xl font-bold tracking-wide text-foreground mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-2 opacity-80">
                     {item.description}
                   </p>
 
-                  {/* Tags Area */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {item.service && (
-                      <span className="px-3 py-1 bg-surface text-foreground rounded-full text-xs tracking-wider border border-border/80">
+                      <span className="px-2.5 py-0.5 bg-primary/5 text-primary rounded-full text-[10px] font-medium border border-primary/10">
                         {item.service.name}
                       </span>
                     )}
                     {item.location && (
-                      <span className="px-3 py-1 bg-surface text-foreground rounded-full text-xs tracking-wider border border-border/80">
+                      <span className="px-2.5 py-0.5 bg-accent-primary/5 text-accent-primary rounded-full text-[10px] font-medium border border-accent-primary/10">
                         {item.location.name}
                       </span>
                     )}
-                    <span className="px-3 py-1 bg-surface text-foreground rounded-full text-xs tracking-wider border border-border/80">
+                    <span className="px-2.5 py-0.5 bg-surface text-muted-foreground rounded-full text-[10px] border border-border/40">
                       {genderMap[item.gender]}
                     </span>
-                    {item.tags?.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-surface text-foreground rounded-full text-xs tracking-wider border border-border/80">
-                        {tag}
-                      </span>
-                    ))}
                   </div>
                 </div>
 
-                {/* Bottom Row */}
-                <div className="flex items-center gap-4 text-muted-foreground">
-                  <button onClick={() => handleOpenEdit(item)} className="hover:text-primary transition-colors cursor-pointer">
+                {/* Actions */}
+                <div className="flex justify-end gap-3">
+                  <button onClick={() => handleOpenEdit(item)} className="hover:text-primary transition-colors">
                     <Pencil size={16} />
                   </button>
-                  <button onClick={() => setDeletingId(item.id)} className="hover:text-destructive transition-colors cursor-pointer">
+                  <button onClick={() => { setDeletingId(item.id); setIsDeleteDialogOpen(true); }} className="hover:text-destructive transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -297,214 +295,152 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
         </div>
 
         {portfolios.length === 0 && (
-          <div className="text-center py-20 bg-surface/30 rounded-[24px] border border-border/50 border-dashed">
-            <p className="text-muted-foreground tracking-widest">目前尚無作品，請點擊右上角新增作品。</p>
+          <div className="text-center py-24 bg-surface/30 rounded-[40px] border border-border/40 border-dashed">
+            <p className="text-muted-foreground tracking-widest text-sm italic">目前尚無作品，點擊上方按鈕開始創作吧！</p>
           </div>
         )}
       </div>
 
       {/* Edit/Create Modal */}
-      {isModalOpen && editingItem && (
-        <AdminModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          title={editingItem.id ? "編輯作品" : "新增作品"}
-          maxWidth="max-w-2xl"
-          formId="portfolio-form"
-          isLoading={isSaving}
-          confirmDisabled={isUploading}
-        >
-          <form onSubmit={handleSave} id="portfolio-form" className="space-y-3">
-            {/* Top Grid: Images and Basic Info */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-12">
-              {/* Left Column: Image Uploads */}
-              <div className="md:col-span-2 space-y-2">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">作品圖片</label>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-md">(最多 2 張)</span>
-                </div>
+      <AdminModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingItem?.id ? "編輯作品" : "新增作品"}
+        formId="portfolio-form"
+        isLoading={isSaving}
+        confirmDisabled={isUploading}
+      >
+        <form onSubmit={handleSave} id="portfolio-form" className="space-y-6">
+          <ModalField label={`作品圖片 (${editingItem?.imageUrls?.length || 0}/2)`}>
+            <ImageUpload
+              imageUrls={editingItem?.imageUrls || []}
+              maxImages={2}
+              isUploading={isUploading}
+              fileInputRef={fileInputRef}
+              onUpload={handleFileUpload}
+              onRemove={(idx) => {
+                const newUrls = [...(editingItem?.imageUrls || [])];
+                newUrls.splice(idx, 1);
+                setEditingItem(prev => prev ? { ...prev, imageUrls: newUrls } : prev);
+              }}
+              onMove={(idx, dir) => {
+                const urls = [...(editingItem?.imageUrls || [])];
+                const targetIdx = dir === 'left' ? idx - 1 : idx + 1;
+                [urls[idx], urls[targetIdx]] = [urls[targetIdx], urls[idx]];
+                setEditingItem(prev => prev ? { ...prev, imageUrls: urls } : prev);
+              }}
+            />
+          </ModalField>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {[0, 1].map((idx) => (
-                    <div key={idx} className="relative group">
-                      <div className="absolute -top-1 -left-1 w-6 h-6 bg-primary text-white text-[10px] flex items-center justify-center rounded-md font-bold z-10 shadow-sm">
-                        {idx + 1}
-                      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-6">
+              <ModalField label="作品標題">
+                <ModalInput
+                  required
+                  value={editingItem?.title || ""}
+                  onChange={e => setEditingItem(prev => prev ? { ...prev, title: e.target.value } : prev)}
+                  placeholder="例如：韓系霧眉作品"
+                />
+              </ModalField>
 
-                      <div
-                        onClick={() => {
-                          if (!isUploading) {
-                            setActiveUploadIndex(idx);
-                            fileInputRef.current?.click();
-                          }
-                        }}
-                        className={`aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden
-                          ${editingItem.imageUrls?.[idx] ? 'border-transparent' : 'border-border hover:border-primary/50 bg-muted/20 hover:bg-primary/5'}
-                          ${isUploading && activeUploadIndex === idx ? 'opacity-50 cursor-not-allowed' : ''}
-                        `}
-                      >
-                        {editingItem.imageUrls?.[idx] ? (
-                          <>
-                            <Image
-                              src={editingItem.imageUrls[idx]}
-                              alt={`Preview ${idx + 1}`}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              unoptimized
-                            />
-                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <ImagePlus size={18} className="mb-1 text-primary/70" />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const newUrls = [...(editingItem.imageUrls || [])];
-                                newUrls[idx] = "";
-                                setEditingItem({ ...editingItem, imageUrls: newUrls });
-                              }}
-                              className="absolute top-2 right-2 w-6 h-6 bg-destructive text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                            >
-                              <X size={12} />
-                            </button>
-                          </>
-                        ) : isUploading && activeUploadIndex === idx ? (
-                          <Loader2 size={24} className="animate-spin text-primary" />
-                        ) : (
-                          <div className="flex flex-col items-center text-muted-foreground p-1 text-center">
-                            <ImagePlus size={18} className="mb-1 text-primary/70" />
-                            <span className="text-sm">上傳圖片</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+              <ModalField label="自訂標籤 (Enter 加入)">
+                <div className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-background shadow-sm flex flex-wrap gap-2 min-h-[44px] focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+                  {editingItem?.tags?.map((tag, idx) => (
+                    <span key={idx} className="flex items-center gap-1 bg-primary/5 text-primary px-2 py-0.5 rounded-full text-xs font-medium border border-primary/10">
+                      {tag}
+                      <button type="button" onClick={() => handleRemoveTag(tag)} className="hover:text-destructive">
+                        <X size={10} />
+                      </button>
+                    </span>
                   ))}
-                </div>
-                <p className="text-[10px] text-muted-foreground/60 text-center">支援 JPG、PNG，單張檔案大小不超過 5MB</p>
-              </div>
-
-              {/* Right Column: Title, Description, Tags */}
-              <div className="md:col-span-3 space-y-3">
-                <div>
-                  <label className="text-sm font-medium">作品標題</label>
                   <input
                     type="text"
-                    required
-                    value={editingItem.title || ""}
-                    onChange={e => setEditingItem({ ...editingItem, title: e.target.value })}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-                    placeholder="例如：韓系霧眉"
+                    value={tagInput}
+                    onChange={e => setTagInput(e.target.value)}
+                    onKeyDown={handleAddTag}
+                    placeholder={editingItem?.tags?.length ? "" : "輸入標籤..."}
+                    className="flex-1 min-w-[80px] bg-transparent focus:outline-none text-sm"
                   />
                 </div>
-
-                <div>
-                  <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium">作品描述</label>
-                    <span className="text-[10px] text-muted-foreground/60">{(editingItem.description || "").length} / 100</span>
-                  </div>
-                  <textarea
-                    rows={4}
-                    maxLength={100}
-                    value={editingItem.description || ""}
-                    onChange={e => setEditingItem({ ...editingItem, description: e.target.value })}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
-                    placeholder="例如：自然韓系霧眉，柔順線條..."
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium">自訂標籤 (選填)</label>
-                  <div className="w-full px-4 py-3 rounded-xl border border-border bg-background flex flex-wrap gap-2 min-h-12 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm">
-                    {editingItem.tags?.map((tag, idx) => (
-                      <span key={idx} className="flex items-center gap-1.5 bg-primary/5 text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/10">
-                        {tag}
-                        <button type="button" onClick={() => handleRemoveTag(tag)} className="hover:text-destructive transition-colors">
-                          <X size={12} />
-                        </button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={tagInput}
-                      onChange={e => setTagInput(e.target.value)}
-                      onKeyDown={handleAddTag}
-                      placeholder={editingItem.tags?.length ? "" : "輸入標籤後按 Enter 加入"}
-                      className="flex-1 min-w-[120px] bg-transparent focus:outline-none text-sm px-1 placeholder:text-muted-foreground/40"
-                    />
-                  </div>
-                </div>
-              </div>
+              </ModalField>
             </div>
 
-            {/* Bottom Row: Dropdowns */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-              <div>
-                <label className="text-sm font-medium">項目</label>
-                <select
-                  value={editingItem.service?.id || ""}
-                  onChange={e => {
-                    const srv = serviceOptions.find(s => s.id === e.target.value);
-                    setEditingItem({ ...editingItem, service: srv || null });
-                  }}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm appearance-none cursor-pointer"
-                >
-                  <option value="">選擇項目</option>
-                  {serviceOptions.map(opt => (
-                    <option key={opt.id} value={opt.id}>{opt.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium">地點</label>
-                <select
-                  value={editingItem.location?.id || ""}
-                  onChange={e => {
-                    const loc = locationOptions.find(l => l.id === e.target.value);
-                    setEditingItem({ ...editingItem, location: loc || null });
-                  }}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm appearance-none cursor-pointer"
-                >
-                  <option value="">選擇地點</option>
-                  {locationOptions.map(opt => (
-                    <option key={opt.id} value={opt.id}>{opt.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium">性別</label>
-                <select
-                  value={editingItem.gender || "FEMALE"}
-                  onChange={e => setEditingItem({ ...editingItem, gender: e.target.value })}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm appearance-none cursor-pointer"
-                >
-                  <option value="">選擇性別</option>
-                  <option value="FEMALE">女性</option>
-                  <option value="MALE">男性</option>
-                  <option value="UNISEX">中性</option>
-                </select>
-              </div>
-            </div>
+            <ModalField label="作品描述">
+              <ModalTextarea
+                rows={5}
+                maxLength={100}
+                value={editingItem?.description || ""}
+                onChange={e => setEditingItem(prev => prev ? { ...prev, description: e.target.value } : prev)}
+                placeholder="介紹一下這個作品吧..."
+              />
+            </ModalField>
+          </div>
 
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-            />
-          </form>
-        </AdminModal>
-      )}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <ModalField label="施作項目">
+              <ModalSelect
+                value={editingItem?.service?.id || ""}
+                onChange={e => {
+                  const srv = serviceOptions.find(s => s.id === e.target.value);
+                  setEditingItem(prev => prev ? { ...prev, service: srv || null } : prev);
+                }}
+              >
+                <option value="">選擇項目</option>
+                {serviceOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                ))}
+              </ModalSelect>
+            </ModalField>
 
-      {/* Delete Confirm Modal */}
-      <DeleteConfirmModal
-        isOpen={!!deletingId}
-        onClose={() => setDeletingId(null)}
+            <ModalField label="施作地點">
+              <ModalSelect
+                value={editingItem?.location?.id || ""}
+                onChange={e => {
+                  const loc = locationOptions.find(l => l.id === e.target.value);
+                  setEditingItem(prev => prev ? { ...prev, location: loc || null } : prev);
+                }}
+              >
+                <option value="">選擇地點</option>
+                {locationOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>{opt.name}</option>
+                ))}
+              </ModalSelect>
+            </ModalField>
+
+            <ModalField label="適用性別">
+              <ModalSelect
+                value={editingItem?.gender || "FEMALE"}
+                onChange={e => setEditingItem(prev => prev ? { ...prev, gender: e.target.value } : prev)}
+              >
+                <option value="FEMALE">女性</option>
+                <option value="MALE">男性</option>
+                <option value="UNISEX">中性</option>
+              </ModalSelect>
+            </ModalField>
+          </div>
+        </form>
+      </AdminModal>
+
+      {/* Delete Confirmation */}
+      <AdminModal
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDelete}
-        isLoading={isDeleting}
         title="確定要刪除此作品嗎？"
-        description="刪除後將無法復原，包含圖片與關聯資訊將一併移除。"
-      />
+        confirmText="確定刪除"
+        confirmVariant="destructive"
+        isLoading={isSaving}
+        maxWidth="max-w-md"
+      >
+        <div className="space-y-6">
+          <div className="w-16 h-16 rounded-3xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle size={32} />
+          </div>
+          <p className="text-sm font-medium text-center px-4">
+            刪除後將無法復原，包含圖片與關聯資訊將一併從資料庫中永久移除。
+          </p>
+        </div>
+      </AdminModal>
     </div>
   );
 }

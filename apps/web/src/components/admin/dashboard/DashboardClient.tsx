@@ -116,7 +116,7 @@ export function DashboardClient({ initialBookings }: Props) {
             <button
               key={opt.value}
               onClick={() => setStatusFilter(opt.value)}
-              className={`cursor-pointer whitespace-nowrap px-4 py-1.5 rounded-full text-sm transition-colors ${statusFilter === opt.value
+              className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm transition-colors ${statusFilter === opt.value
                 ? "bg-surface text-primary"
                 : "bg-surface/50 text-muted-foreground"
                 }`}

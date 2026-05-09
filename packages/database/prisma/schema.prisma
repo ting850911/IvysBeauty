@@ -1,109 +1,135 @@
-datasource db {  
-  provider = "postgresql"  
-  url      = env("DATABASE_URL")  
-}
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
-// 1. 全域店家資訊 (Store Info)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model StoreInfo {
-  id          String   @id @default(cuid())
-  phone       String?  // 主要聯絡手機
-  line        String?  // Line 連結或 ID
-  instagram   String?  // Instagram 連結
-  threads     String?  // Threads 連結
-  bankCode    String?  // 銀行代碼
-  bankName    String?  // 銀行名稱
-  bankAccount String?  // 匯款帳號
-  bankAccountName String? // 帳戶名稱
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  id              String   @id @default(cuid())
+  phone           String?
+  line            String?
+  instagram       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  bankAccount     String?
+  bankAccountName String?
+  bankCode        String?
+  bankName        String?
+  threads         String?
 }
 
-// 2. 店家與地點資訊 (Locations)
-model Location {  
-  id             String      @id @default(cuid())  
-  name           String  
-  address        String  
-  imageUrls      String[]    @default([]) // 店內照片(多張)
-  isPublished    Boolean     @default(true) // 是否上架/發佈
-  bookings       Booking[]  
-  services       Service[]  
-  portfolios     Portfolio[]  
-  schedules      MonthlySchedule[] // 每月排程
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @default(now()) @updatedAt
+model Location {
+  id          String            @id @default(cuid())
+  name        String
+  address     String
+  createdAt   DateTime          @default(now())
+  isPublished Boolean           @default(true)
+  updatedAt   DateTime          @default(now()) @updatedAt
+  imageUrls   String[]          @default([])
+  bookings    Booking[]
+  schedules   MonthlySchedule[]
+  portfolios  Portfolio[]
+  services    Service[]         @relation("LocationToService")
 }
 
-// 2.5 每月排程 (Monthly Schedules)
 model MonthlySchedule {
-  id          String   @id @default(cuid())
-  locationId  String
-  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  month       String   // 格式: "YYYY-MM"
-  all         Json     // 該月的固定營業時間範本 (DailyHour[])
-  overrides   Json     // 該月的特定日期例外 (Record<string, DailyHour>)
-  
-  @@unique([locationId, month]) // 每個據點每個月只有一份排程
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  locationId String
+  month      String
+  all        Json
+  overrides  Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, month])
 }
 
-// 2. 服務項目  
-model Service {  
-  id          String      @id @default(cuid())  
-  name        String  
-  price       Int  
-  duration    Int         // 服務耗時 (分鐘)
-  isPublished Boolean     @default(true)     // 上架
-  locations   Location[]  
-  bookings    Booking[]  
-  portfolios  Portfolio[]  
+model Service {
+  id          String      @id @default(cuid())
+  name        String
+  price       Int
+  duration    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @default(now()) @updatedAt
+  isPublished Boolean     @default(true)
+  bookings    Booking[]
+  portfolios  Portfolio[]
+  locations   Location[]  @relation("LocationToService")
 }
 
-// 3. 會員與使用者  
-model User {  
-  id            String    @id @default(cuid())  
-  name          String?  
-  email         String?   @unique  
-  passwordHash  String?
-  phone         String?  
-  birthday      String?  
-  role          Role      @default(MEMBER)  
-  bookings      Booking[]  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+model User {
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String?   @unique
+  passwordHash       String?
+  phone              String?
+  birthday           String?
+  role               Role      @default(MEMBER)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+  cumulativeSpending Int       @default(0)
+  lastVisit          DateTime?
+  level              String    @default("一般會員")
+  memberNotes        String?
+  points             Int       @default(0)
+  prepaidBalance     Int       @default(0)
+  status             String    @default("啟用中")
+  visitCount         Int       @default(0)
+  bookings           Booking[]
 }
 
-enum Role {  
-  OWNER  
-  MEMBER  
+model Booking {
+  id         String        @id @default(cuid())
+  status     BookingStatus @default(PENDING)
+  startTime  DateTime
+  endTime    DateTime
+  expiredAt  DateTime
+  locationId String
+  serviceId  String
+  customerId String
+  notes      String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now()) @updatedAt
+  customer   User          @relation(fields: [customerId], references: [id])
+  location   Location      @relation(fields: [locationId], references: [id])
+  service    Service       @relation(fields: [serviceId], references: [id])
 }
 
-// 4. 預約紀錄 (核心邏輯)  
-model Booking {  
-  id             String        @id @default(cuid())  
-  status         BookingStatus @default(PENDING)  
-  startTime      DateTime  
-  endTime        DateTime  
-  expiredAt      DateTime      // 輔助欄位：PENDING 狀態的付款期限
-  locationId     String  
-  location       Location      @relation(fields: [locationId], references: [id])  
-  serviceId      String  
-  service        Service       @relation(fields: [serviceId], references: [id])  
-  customerId     String  
-  customer       User          @relation(fields: [customerId], references: [id])  
-  notes          String?  
-  createdAt      DateTime      @default(now())  
-  updatedAt      DateTime      @default(now()) @updatedAt
+model Portfolio {
+  id          String    @id @default(cuid())
+  description String?
+  gender      Gender    @default(FEMALE)
+  locationId  String?
+  serviceId   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  tags        String[]  @default([])
+  title       String    @default("未命名作品")
+  imageUrls   String[]  @default([])
+  location    Location? @relation(fields: [locationId], references: [id])
+  service     Service?  @relation(fields: [serviceId], references: [id])
 }
 
-enum BookingStatus {  
+model HomeContent {
+  id        String   @id @default("singleton")
+  hero      Json
+  about     Json
+  notice    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  OWNER
+  MEMBER
+}
+
+enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
@@ -111,34 +137,8 @@ enum BookingStatus {
   MISSED
 }
 
-// 5. 作品集 (多維度篩選)  
-model Portfolio {  
-  id          String    @id @default(cuid())  
-  title       String    @default("未命名作品")
-  imageUrls   String[]  @default([])
-  description String?
-  tags        String[]  @default([])
-  gender      Gender    @default(FEMALE)
-  locationId  String?  
-  location    Location? @relation(fields: [locationId], references: [id])
-  serviceId   String?  
-  service     Service?  @relation(fields: [serviceId], references: [id])
-  createdAt   DateTime  @default(now())  
-  updatedAt   DateTime  @default(now()) @updatedAt
-}
-
-enum Gender {  
-  MALE  
-  FEMALE  
-  UNISEX  
-}
-
-// 6. 首頁管理內容 (Home Content)
-model HomeContent {
-  id        String   @id @default("singleton")
-  hero      Json     // { eyebrow, title, description, imageUrls, buttonText }
-  about     Json     // { eyebrow, title, description }
-  notice    Json     // { eyebrow, title, description, rules: [{ title, content }] }
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum Gender {
+  MALE
+  FEMALE
+  UNISEX
 }

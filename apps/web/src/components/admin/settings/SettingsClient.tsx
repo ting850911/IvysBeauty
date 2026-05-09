@@ -22,7 +22,7 @@ interface Props {
 
 export function SettingsClient({ initialLocations, initialStoreInfo, initialServices }: Props) {
   const router = useRouter();
-  
+
   // Store Info State
   const [storeInfo, setStoreInfo] = useState<AdminStoreInfo>(initialStoreInfo);
   const [isSavingStoreInfo, setIsSavingStoreInfo] = useState(false);
@@ -109,9 +109,9 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
       }
 
       if (uploadedUrls.length > 0) {
-        setEditingLoc(prev => prev ? { 
-          ...prev, 
-          imageUrls: [...(prev.imageUrls || []), ...uploadedUrls] 
+        setEditingLoc(prev => prev ? {
+          ...prev,
+          imageUrls: [...(prev.imageUrls || []), ...uploadedUrls]
         } : prev);
       }
     } catch (err) {
@@ -127,13 +127,13 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
     if (!editingLoc?.imageUrls) return;
     const newUrls = [...editingLoc.imageUrls];
     const targetIndex = direction === 'left' ? index - 1 : index + 1;
-    
+
     if (targetIndex < 0 || targetIndex >= newUrls.length) return;
-    
+
     const temp = newUrls[index];
     newUrls[index] = newUrls[targetIndex];
     newUrls[targetIndex] = temp;
-    
+
     setEditingLoc({ ...editingLoc, imageUrls: newUrls });
   };
 
@@ -310,7 +310,7 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-2">
+    <div className="max-w-5xl mx-auto">
       <div className="space-y-12 animate-fade-in">
         {/* 1. Store Info Block */}
         <StoreInfoSection
@@ -343,7 +343,7 @@ export function SettingsClient({ initialLocations, initialStoreInfo, initialServ
       </div>
 
       {/* --- MODALS --- */}
-      
+
       <LocationEditModal
         isOpen={isLocModalOpen}
         onClose={() => setIsLocModalOpen(false)}

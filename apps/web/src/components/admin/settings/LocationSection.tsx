@@ -51,9 +51,9 @@ export function LocationSection({
                   <h3 className="text-lg font-bold tracking-wide">{loc.name}</h3>
                 </div>
                 <div className="space-y-3 mb-6 flex-1">
-                  <div className="flex items-start gap-3 text-muted-foreground text-sm">
+                  <div className="flex items-start gap-3 text-sm">
                     <MapPin size={16} className="shrink-0 mt-0.5 opacity-70" />
-                    <span className="leading-relaxed font-medium">{loc.address}</span>
+                    <span className="leading-relaxed">{loc.address}</span>
                   </div>
                 </div>
                 <div className="h-px bg-border/50 w-full mb-4"></div>
@@ -68,11 +68,11 @@ export function LocationSection({
                     >
                       <span className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-sm ring-0 transition-transform ${loc.isPublished ? 'translate-x-4' : 'translate-x-0'}`} />
                     </button>
-                    <span className="text-sm font-medium text-muted-foreground">上架顯示</span>
+                    <span className="text-sm">上架顯示</span>
                   </div>
-                  <div className="flex items-center gap-4 text-muted-foreground">
-                    <button onClick={() => handleOpenLocEdit(loc)} className="hover:text-primary transition-colors cursor-pointer"><Pencil size={16} /></button>
-                    <button onClick={() => { setDeletingLocId(loc.id); setIsDeleteLocModalOpen(true); }} className="hover:text-destructive transition-colors cursor-pointer"><Trash2 size={16} /></button>
+                  <div className="flex items-center justify-end gap-3">
+                    <button onClick={() => handleOpenLocEdit(loc)} className="hover:text-primary transition-colors" title="編輯據點"><Pencil size={16} /></button>
+                    <button onClick={() => { setDeletingLocId(loc.id); setIsDeleteLocModalOpen(true); }} className="hover:text-destructive transition-colors" title="刪除據點"><Trash2 size={16} /></button>
                   </div>
                 </div>
               </div>

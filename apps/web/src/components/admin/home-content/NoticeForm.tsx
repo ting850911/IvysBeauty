@@ -155,7 +155,7 @@ export function NoticeForm({ initialData, allContent, onChange }: NoticeFormProp
                   <button
                     type="button"
                     onClick={() => removeRule(idx)}
-                    className="p-2 cursor-pointer hover:text-red-500 transition-all self-end"
+                    className="p-2 hover:text-red-600 transition-all self-end"
                   >
                     <Trash2 size={18} />
                   </button>

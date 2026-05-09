@@ -1,7 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @reference "tailwindcss";
+@config "./tailwind.config.ts";
 
 /* Ivy's Beauty — Milk Tea Design System
    All colors MUST be HSL. Tokens only. No raw hex in components.
@@ -152,10 +150,67 @@
     object-fit: cover;
     object-position: center;
   }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  button {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.2);
+  }
 }
 
 @utility text-eyebrow {
   @apply text-xs uppercase font-bold drop-shadow-sm;
   color: hsl(var(--primary));
   letter-spacing: 0.4em;
+}
+
+/* Admin Tag System */
+@utility admin-tag {
+  @apply px-3 py-1 rounded-full text-xs transition-all inline-flex items-center justify-center;
+}
+
+@utility admin-tag-primary {
+  @apply bg-primary/10 text-primary;
+}
+
+@utility admin-tag-success {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+@utility admin-tag-danger {
+  @apply bg-red-50 text-red-600;
+}
+
+@utility admin-tag-warning {
+  @apply bg-amber-50 text-amber-600;
+}
+
+@utility admin-tag-info {
+  @apply bg-blue-50 text-blue-600;
+}
+
+@utility admin-tag-muted {
+  @apply bg-muted/20 text-muted-foreground;
 }

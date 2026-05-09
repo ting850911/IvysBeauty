@@ -30,7 +30,7 @@ export default async function AdminSchedulesPage() {
 
     if (locations.length === 0) {
       return (
-        <div className="p-20 text-center text-muted-foreground bg-white rounded-[40px] border border-dashed border-border/60">
+        <div className="p-20 text-center text-muted-foreground bg-white rounded-3xl border border-dashed border-border/60">
           目前沒有任何分店資料，請先建立分店。
         </div>
       );
@@ -57,7 +57,7 @@ export default async function AdminSchedulesPage() {
     // On hard error, we can still show the client with mock data for safety, 
     // but ideally we should show an error state.
     return (
-      <div className="p-8 text-center bg-surface min-h-[400px] flex flex-col items-center justify-center rounded-[32px]">
+      <div className="p-8 text-center bg-surface min-h-[400px] flex flex-col items-center justify-center rounded-3xl">
         <h4 className="text-destructive font-bold text-xl">資料載入錯誤</h4>
         <p className="text-muted-foreground text-sm mt-2">請確認資料庫狀態與網路連線</p>
       </div>

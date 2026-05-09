@@ -28,7 +28,7 @@ interface BookingListProps {
 export function BookingList({ bookings, onStatusChange, isLoadingAction }: BookingListProps) {
   if (bookings.length === 0) {
     return (
-      <div className="bg-surface rounded-2xl p-10 border border-border/50 text-center flex flex-col items-center">
+      <div className="bg-surface rounded-3xl p-10 border border-border/50 text-center flex flex-col items-center">
         <p>目前沒有符合條件的預約紀錄</p>
       </div>
     );
@@ -81,7 +81,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                   <option value="MISSED">未出席</option>
                 </select>
                 {isLoadingAction === booking.id && (
-                  <span className="mt-1 text-[10px] text-primary whitespace-nowrap">更新中...</span>
+                  <span className="mt-1 text-xs text-primary whitespace-nowrap">更新中...</span>
                 )}
               </div>}
               <div className="absolute bottom-5 right-5 text-sm">
@@ -158,7 +158,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                             <option value="MISSED">未出席</option>
                           </select>
                           {isLoadingAction === booking.id && (
-                            <span className="absolute right-0 top-full mt-1 text-[10px] text-primary whitespace-nowrap">更新中...</span>
+                            <span className="absolute right-0 top-full mt-1 text-xs text-primary whitespace-nowrap">更新中...</span>
                           )}
                         </div>
                       ) : (
