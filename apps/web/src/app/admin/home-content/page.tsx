@@ -71,10 +71,10 @@ export default function HomeContentPage() {
   return (
     <div className="max-w-5xl mx-auto">
       <main className="flex flex-col overflow-auto">
-        <div className="flex-1 flex gap-8">
+        <div className="flex-1 flex flex-col lg:flex-row gap-8">
           {/* Left Form Area */}
-          <div className="w-[40%] flex flex-col gap-6">
-            <div className="bg-surface w-fit flex rounded-2xl p-1">
+          <div className="w-full lg:w-[45%] flex flex-col gap-6">
+            <div className="bg-surface w-fit flex rounded-2xl p-1 shrink-0">
               {[
                 { id: "hero", label: "Hero" },
                 { id: "about", label: "About" },
@@ -93,7 +93,7 @@ export default function HomeContentPage() {
               ))}
             </div>
 
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 lg:overflow-auto">
               {activeTab === "hero" && (
                 <HeroForm
                   initialData={content.hero}
@@ -120,8 +120,8 @@ export default function HomeContentPage() {
             </div>
           </div>
 
-          {/* Right Preview Area */}
-          <div className="flex-1 flex flex-col gap-6">
+          {/* Right Preview Area - Hidden on small devices */}
+          <div className="hidden lg:flex flex-1 flex-col gap-6 min-w-0">
             <h5>首頁預覽</h5>
 
             <div className="rounded-3xl border border-border/50 overflow-auto relative min-h-[600px] bg-background">

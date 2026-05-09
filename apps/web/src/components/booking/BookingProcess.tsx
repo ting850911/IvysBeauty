@@ -213,7 +213,7 @@ export function BookingProcess() {
             <p className="flex justify-between"><span className="text-muted-foreground">帳戶名稱</span> <span className="font-bold">{storeInfo?.bankAccountName || "IvysBeauty Studio"}</span></p>
             <div className="mt-6 pt-6 border-t border-border/40 flex justify-between items-center">
               <span className="font-bold">訂金金額</span>
-              <span className="text-2xl font-bold text-primary">NT$ {(data.price * 0.3).toLocaleString()}</span>
+              <span className="text-2xl font-bold text-primary">NT$ {Math.max(2000, data.price * 0.3).toLocaleString()}</span>
             </div>
           </div>
           <p className="text-sm text-muted-foreground bg-muted/30 p-4 rounded-2xl">
@@ -470,7 +470,7 @@ export function BookingProcess() {
                 <p className='text-sm'>
                   請於
                   <strong className='text-primary'>
-                    24 小時內，匯款 {data.price > 0 ? data.price * 0.3 : 2000} 訂金
+                    24 小時內，匯款 {Math.max(2000, data.price * 0.3).toLocaleString()} 訂金
                   </strong>
                   至下方帳戶，並上傳匯款證明，謝謝。
                 </p>

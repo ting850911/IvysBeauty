@@ -192,7 +192,7 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
   };
 
   return (
-    <main className="flex-1 p-4 md:p-8 overflow-auto">
+    <>
       {/* Main Content */}
       <div className="max-w-5xl mx-auto space-y-8">
 
@@ -214,10 +214,10 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
           {/* Upcoming Birthdays Card */}
           <div className="md:col-span-2 rounded-3xl p-6 shadow-md">
             <div className="flex items-center justify-between mb-6">
-              <h5 className="flex items-center gap-2">
+              <h6 className="flex items-center gap-2">
                 <Gift size={16} className="text-accent-secondary" />
                 本月壽星
-              </h5>
+              </h6>
               <button className="text-xs text-primary hover:underline">查看全部</button>
             </div>
 
@@ -244,7 +244,7 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
         </div>
 
         {/* Member Table */}
-        <div className="rounded-xl overflow-hidden shadow-md">
+        <div className="rounded-xl md:overflow-hidden overflow-y-auto shadow-md">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-background text-xs whitespace-nowrap">
@@ -274,10 +274,10 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
                 <th className="px-5 py-3 text-right">操作</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/40">
+            <tbody className="divide-y divide-border/40 whitespace-nowrap">
               {processedMembers.length > 0 ? (
                 processedMembers.map((member) => (
-                  <tr key={member.id} className="text-sm whitespace-nowrap group">
+                  <tr key={member.id} className="text-sm group">
                     <td className="px-5 py-4">
                       <button
                         onClick={() => handleOpenHistory(member)}
@@ -498,7 +498,7 @@ export function MembersClient({ initialMembers, stats, upcomingBirthdays }: Prop
           </div>
         </div>
       </AdminModal>
-    </main>
+    </>
   );
 }
 
@@ -517,7 +517,7 @@ function StatCard({ title, value, unit, trend, icon }: { title: string, value: s
         )}
       </div>
       <div>
-        <h5>{title}</h5>
+        <h6>{title}</h6>
         <div className="flex items-baseline gap-1">
           <h5>{value}</h5>
           <span className="text-xs">{unit}</span>

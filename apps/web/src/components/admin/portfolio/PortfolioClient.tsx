@@ -256,7 +256,7 @@ export function PortfolioClient({ initialPortfolios, locationOptions, serviceOpt
               </div>
 
               {/* Content Info */}
-              <div className="flex-1 flex flex-col justify-between">
+              <div className="flex-1 flex flex-col justify-between gap-2">
                 <div>
                   <h5>{item.title}</h5>
                   <p className="text-sm leading-relaxed mb-2 line-clamp-2">

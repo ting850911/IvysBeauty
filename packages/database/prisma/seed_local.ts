@@ -25,7 +25,6 @@ async function main() {
     data: {
       name: "板橋工作室",
       address: "新埔捷運站 1 號出口・步行 3 分鐘",
-      openingHours: [{"label":"週一","isOpen":false,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":1},{"label":"週二","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":2},{"label":"週三","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":3},{"label":"週四","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":4},{"label":"週五","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":5},{"label":"週六","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":6},{"label":"週日","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":0}],
       imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843322/ivys-beauty/hzssj5c8wyfbz9vgtca6.png", "https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843278/ivys-beauty/cmfvomh59wxgn3plop50.png"]
     },
   });
@@ -34,7 +33,6 @@ async function main() {
     data: {
       name: "宜蘭工作室",
       address: "宜蘭縣壯圍鄉永美路",
-      openingHours: [{"label":"週一","isOpen":false,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":1},{"label":"週二","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":2},{"label":"週三","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":3},{"label":"週四","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":4},{"label":"週五","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":5},{"label":"週六","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":6},{"label":"週日","isOpen":true,"hasBreak":false,"openTime":"11:00","closeTime":"20:00","dayOfWeek":0}],
     },
   });
 

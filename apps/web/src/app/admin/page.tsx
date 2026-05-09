@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
       location: { name: booking.location?.name || "未知地點" },
       service: { name: booking.service?.name || "未知服務", price: booking.service?.price || 0 },
       customer: {
-        name: booking.customer.name || "未知客人",
+        name: safeDecrypt(booking.customer.name) || "未知客人",
         phone: safeDecrypt(booking.customer.phone) || "",
         email: booking.customer.email || "",
       },

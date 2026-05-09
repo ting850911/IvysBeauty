@@ -57,7 +57,7 @@ export function AdminSheet({
         {/* Header */}
         <div className="px-6 py-5 border-b border-border/10 flex items-center justify-between shrink-0 bg-surface/30">
           <div>
-            <h3 className="text-base font-bold text-foreground tracking-tight">{title}</h3>
+            <h6>{title}</h6>
             {description && <p className="text-xs text-muted-foreground mt-1 opacity-70">{description}</p>}
           </div>
           <button

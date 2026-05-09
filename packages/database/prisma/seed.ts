@@ -24,7 +24,6 @@ async function main() {
     data: {
       name: "板橋工作室",
       address: "新埔捷運站 1 號出口・步行 3 分鐘",
-      openingHours: [],
       imageUrls: ["https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843322/ivys-beauty/hzssj5c8wyfbz9vgtca6.png", "https://res.cloudinary.com/dvkajiqyy/image/upload/v1777843278/ivys-beauty/cmfvomh59wxgn3plop50.png"]
     },
   });
@@ -33,7 +32,6 @@ async function main() {
     data: {
       name: "宜蘭工作室",
       address: "宜蘭縣壯圍鄉永美路",
-      openingHours: [],
     },
   });
 

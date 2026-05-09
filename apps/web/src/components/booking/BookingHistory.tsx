@@ -121,7 +121,7 @@ export function BookingHistory() {
             const timeString = formatInTimeZone(startDate, "Asia/Taipei", "HH:mm");
 
             return (
-              <div key={booking.id} className="relative bg-surface rounded-3xl p-6 md:p-8 border border-border/60 shadow-sm transition-all hover:shadow-md hover:border-primary/30 group">
+              <div key={booking.id} className="relative bg-surface rounded-3xl p-6 md:p-8 shadow-md transition-all group">
                 <div className="pl-2">
                   <div className="flex justify-between items-start mb-6 gap-4">
                     <div>
@@ -131,7 +131,7 @@ export function BookingHistory() {
                     {getStatusTag(booking.status)}
                   </div>
 
-                  <div className="bg-background/50 rounded-2xl p-4 border border-border/60 mb-6 flex flex-col sm:flex-row justify-between">
+                  <div className="bg-background/50 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row justify-between">
                     <div>
                       <p className="text-sm mb-1">預約時間</p>
                       <p>{dateString} <span className="text-primary font-bold">{timeString}</span></p>
@@ -144,7 +144,7 @@ export function BookingHistory() {
 
                   {booking.status === "PENDING" && (
                     <div className="text-sm bg-background rounded-2xl p-4 mt-4 shadow-md">
-                      <h6 className="text-primary mb-1">待匯款訂金: NT$ {(booking.service.price * 0.3).toLocaleString()}</h6>
+                      <h6 className="text-primary mb-1">待匯款訂金: NT$ {Math.max(2000, booking.service.price * 0.3).toLocaleString()}</h6>
                       <p>提醒您，預約單送出後請於 24 小時內完成匯款，以免系統自動取消釋放名額。</p>
                     </div>
                   )}

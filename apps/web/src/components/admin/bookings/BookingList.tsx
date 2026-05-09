@@ -85,8 +85,8 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                 )}
               </div>}
               <div className="absolute bottom-5 right-5 text-sm">
-                {hasConfirmedCol && `應收: ${booking.service.price - (booking.service.price) * 0.3}元`}
-                {hasPendingCol && `訂金: ${booking.service.price * 0.3}元`}
+                {hasConfirmedCol && `應收: ${Math.max(0, booking.service.price - Math.max(2000, booking.service.price * 0.3))}元`}
+                {hasPendingCol && `訂金: ${Math.max(2000, booking.service.price * 0.3)}元`}
                 {hasFeeCol && `費用: ${booking.service.price}元`}
               </div>
             </div>
@@ -109,7 +109,7 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
               {hasFeeCol && <th className="py-4 px-4">費用</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/40">
+          <tbody className="divide-y divide-border/40 overflow-y-auto whitespace-nowrap">
             {bookings.map((booking) => {
               const dateObj = parseISO(booking.startTime.toString());
               const dateString = formatInTimeZone(dateObj, "Asia/Taipei", "yyyy-MM-dd");
@@ -168,12 +168,12 @@ export function BookingList({ bookings, onStatusChange, isLoadingAction }: Booki
                   )}
                   {hasConfirmedCol && (
                     <td className="py-5 px-4">
-                      {booking.status === "CONFIRMED" ? booking.service.price - (booking.service.price) * 0.3 : "-"}
+                      {booking.status === "CONFIRMED" ? Math.max(0, booking.service.price - Math.max(2000, booking.service.price * 0.3)) : "-"}
                     </td>
                   )}
                   {hasPendingCol && (
                     <td className="py-5 px-4">
-                      {booking.status === "PENDING" ? booking.service.price * 0.3 : "-"}
+                      {booking.status === "PENDING" ? Math.max(2000, booking.service.price * 0.3) : "-"}
                     </td>
                   )}
                   {hasFeeCol && (

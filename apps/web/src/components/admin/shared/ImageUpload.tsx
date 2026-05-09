@@ -23,7 +23,7 @@ export function ImageUpload({
   fileInputRef,
 }: ImageUploadProps) {
   return (
-    <div className="grid grid-cols-4 gap-3 mt-1">
+    <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mt-1">
       {/* Image Previews */}
       {imageUrls.map((url, idx) => (
         <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-border group bg-muted shadow-sm">
@@ -75,13 +75,13 @@ export function ImageUpload({
               <span className="text-xs">上傳圖片</span>
             </div>
           )}
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            className="hidden" 
-            accept="image/*" 
-            multiple 
-            onChange={onUpload} 
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            multiple
+            onChange={onUpload}
           />
         </div>
       )}

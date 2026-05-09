@@ -30,7 +30,7 @@ export function ServiceSection({
         </Button>
       </div>
 
-      <div className="rounded-xl overflow-hidden shadow-md">
+      <div className="rounded-xl md:overflow-hidden overflow-y-auto shadow-md">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-background text-xs whitespace-nowrap">
@@ -42,7 +42,7 @@ export function ServiceSection({
               <th className="px-5 py-3 text-right">操作</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/40">
+          <tbody className="divide-y divide-border/40 whitespace-nowrap">
             {services.map((srv) => (
               <tr key={srv.id} className="text-sm">
                 <td className="px-5 py-4">{srv.name}</td>
