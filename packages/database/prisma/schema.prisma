@@ -26,6 +26,7 @@ model Location {
   id          String            @id @default(cuid())
   name        String
   address     String
+  timeZoneId  String            @default("Asia/Taipei")
   imageUrls   String[]          @default([])
   isPublished Boolean           @default(true)
   createdAt   DateTime          @default(now())
@@ -63,41 +64,75 @@ model Service {
 }
 
 model User {
-  id                 String    @id @default(cuid())
+  id                 String         @id @default(cuid())
   name               String?
-  email              String?   @unique
-  passwordHash       String?
+  email              String?        @unique
   phone              String?
   birthday           String?
-  role               Role      @default(MEMBER)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @default(now()) @updatedAt
-  cumulativeSpending Int       @default(0)
+  role               Role           @default(MEMBER)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @default(now()) @updatedAt
+  cumulativeSpending Int            @default(0)
   lastVisit          DateTime?
-  level              String    @default("一般會員")
+  level              String         @default("一般會員")
   memberNotes        String?
-  points             Int       @default(0)
-  prepaidBalance     Int       @default(0)
-  status             String    @default("啟用中")
-  visitCount         Int       @default(0)
+  points             Int            @default(0)
+  prepaidBalance     Int            @default(0)
+  status             String         @default("啟用中")
+  visitCount         Int            @default(0)
   bookings           Booking[]
+  identities         UserIdentity[]
+  sessions           Session[]
+}
+
+model UserIdentity {
+  id             String       @id @default(cuid())
+  userId         String
+  provider       AuthProvider
+  providerUserId String
+  email          String?
+  displayName    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model Booking {
-  id         String        @id @default(cuid())
-  status     BookingStatus @default(PENDING)
-  startTime  DateTime
-  endTime    DateTime
-  expiredAt  DateTime
-  locationId String
-  serviceId  String
-  customerId String
-  notes      String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @default(now()) @updatedAt
-  customer   User          @relation(fields: [customerId], references: [id])
-  location   Location      @relation(fields: [locationId], references: [id])
-  service    Service       @relation(fields: [serviceId], references: [id])
+  id             String        @id @default(cuid())
+  status         BookingStatus @default(PENDING)
+  startTime      DateTime
+  endTime        DateTime
+  timeZoneId     String        @default("Asia/Taipei")
+  localDate      String
+  localStartTime String
+  localEndTime   String
+  expiredAt      DateTime
+  locationId     String
+  serviceId      String
+  customerId     String
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+  customer       User          @relation(fields: [customerId], references: [id])
+  location       Location      @relation(fields: [locationId], references: [id])
+  service        Service       @relation(fields: [serviceId], references: [id])
 }
 
 model Portfolio {
@@ -127,6 +162,11 @@ model HomeContent {
 enum Role {
   OWNER
   MEMBER
+}
+
+enum AuthProvider {
+  COGNITO
+  LINE
 }
 
 enum BookingStatus {

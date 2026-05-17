@@ -92,7 +92,6 @@ async function main() {
   await prisma.user.create({
     data: {
       email: "ivy@ivysbeauty.com",
-      passwordHash: ownerHash,
       name: "Ivy Hong",
       role: "OWNER",
     },
