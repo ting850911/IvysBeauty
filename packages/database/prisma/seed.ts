@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -86,13 +85,9 @@ async function main() {
   // ─── 3. Users ─────────────────────────────────────────────────────────────
   console.log("Seeding users...");
 
-  const ownerHash = await bcrypt.hash("Owner123$", 10);
-  const memberHash = await bcrypt.hash("test1234", 10);
-
   await prisma.user.create({
     data: {
       email: "ivy@ivysbeauty.com",
-      passwordHash: ownerHash,
       name: "Ivy Hong",
       role: "OWNER",
     },
@@ -114,8 +109,24 @@ async function main() {
     }
   });
 
-  // ─── 4. Bookings ──────────────────────────────────────────────────────────
-  console.log("Seeding bookings...");
+  // ─── 4. Bookings & Schedules ───────────────────────────────────────────────
+  console.log("Seeding schedules...");
+  const defaultScheduleAll = [
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 1, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 2, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 3, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 4, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 5, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 6, breakStart: "12:00" },
+    { isOpen: true, breakEnd: "13:00", hasBreak: false, openTime: "11:00", closeTime: "20:00", dayOfWeek: 0, breakStart: "12:00" }
+  ];
+
+  await prisma.monthlySchedule.createMany({
+    data: [
+      { locationId: banqiao.id, month: "2026-05", all: defaultScheduleAll, overrides: {} },
+      { locationId: yilan.id, month: "2026-05", all: defaultScheduleAll, overrides: {} }
+    ]
+  });
 
   // ─── 5. Portfolio ─────────────────────────────────────────────────────────
   console.log("Seeding portfolio...");
@@ -201,7 +212,7 @@ async function main() {
   console.log("Seeding complete!");
   console.log("");
   console.log("Accounts:");
-  console.log("  Owner  → ivy@ivysbeauty.com  / Owner123$");
+  console.log("  Owner  → ivy@ivysbeauty.com (Please login via LINE/Cognito to bind identity)");
 }
 
 main()

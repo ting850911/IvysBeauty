@@ -1,0 +1,103 @@
+[
+  {
+    "task": "add_auth_database_models",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Remove passwordHash from User model",
+      "Add UserIdentity and Session models to Prisma schema",
+      "Add required relations to User model",
+      "Generate Prisma client and apply migrations"
+    ],
+    "acceptance": [
+      "Prisma migrate succeeds",
+      "Database schema strictly matches Auth_Implementation_Spec.md requirements"
+    ]
+  },
+  {
+    "task": "implement_app_session_helpers_and_me_api",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Implement server-side session helpers: getSessionUser(), requireUser(), requireOwner(), createSession(), revokeSession()",
+      "Implement GET /api/me to return current user based on ivys_session cookie",
+      "Implement PATCH /api/me (or /api/profile) to update profile fields",
+      "Implement POST /api/auth/logout to revoke session and clear cookie"
+    ],
+    "acceptance": [
+      "GET /api/me correctly validates ivys_session cookie",
+      "Session helpers correctly identify user and owner roles",
+      "Logout successfully clears session and cookie"
+    ]
+  },
+  {
+    "task": "update_frontend_auth_state_and_profile_completion",
+    "owner": "Frontend Flow Agent",
+    "rules": [
+      "Refactor Auth context to hydrate user from /api/me",
+      "Remove client-side JWT and localStorage logic",
+      "Create /complete-profile page with CompleteProfileForm",
+      "Implement two-step gating for protected routes (login -> profile completion -> access)"
+    ],
+    "acceptance": [
+      "Frontend successfully reads user state from /api/me",
+      "Users with missing name, phone, or birthday are redirected to /complete-profile",
+      "Protected routes correctly redirect unauthenticated users to /login"
+    ]
+  },
+  {
+    "task": "fix_api_identity_trust_issues",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Refactor booking creation to use session user id as customerId",
+      "Refactor history API to strictly use session user id",
+      "Ensure all admin APIs use requireOwner()",
+      "Ignore any customerId, email, role, or userId from client payloads"
+    ],
+    "acceptance": [
+      "API endpoints ignore spoofed client identity fields",
+      "Admin APIs reject requests from non-OWNER users with 403 Forbidden",
+      "Booking and history APIs successfully use session context"
+    ]
+  },
+  {
+    "task": "implement_line_login",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Implement GET /api/auth/line/login to initiate LINE OAuth flow",
+      "Implement GET /api/auth/line/callback to handle LINE OAuth callback",
+      "Verify LINE ID token server-side and find/create UserIdentity and local User",
+      "Create app Session and set ivys_session httpOnly cookie"
+    ],
+    "acceptance": [
+      "LINE login successfully authenticates user and creates local session",
+      "Temporary cookies are correctly used for state/nonce verification",
+      "User is safely redirected after successful authentication"
+    ]
+  },
+  {
+    "task": "implement_cognito_login",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Implement GET /api/auth/cognito/login to initiate Cognito OAuth flow",
+      "Implement GET /api/auth/cognito/callback to handle Cognito OAuth callback",
+      "Verify Cognito ID token server-side and find/create UserIdentity and local User",
+      "Create app Session and set ivys_session httpOnly cookie"
+    ],
+    "acceptance": [
+      "Cognito login successfully authenticates user and creates local session",
+      "Temporary cookies are correctly used for state/nonce verification",
+      "User is safely redirected after successful authentication"
+    ]
+  },
+  {
+    "task": "remove_legacy_auth",
+    "owner": "Backend Logic Agent",
+    "rules": [
+      "Remove legacy password/JWT-based authentication endpoints",
+      "Remove legacy JWT validation logic from middleware/helpers"
+    ],
+    "acceptance": [
+      "No legacy auth endpoints exist or function",
+      "System relies entirely on the new ivys_session cookie based authentication"
+    ]
+  }
+]

@@ -1,24 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { uploadImage } from "@/lib/cloudinary";
 import { ErrorCodes } from "@ivysbeauty/shared/src/errors";
-import { verifyAuth } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth-session";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const auth = await verifyAuth(req);
-    if (!auth || auth.role !== "OWNER") {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: ErrorCodes.UNAUTHORIZED,
-            message: "Unauthorized",
-          },
-        },
-        { status: 401 }
-      );
-    }
-
+    await requireOwner();
     const formData = await req.formData();
     const file = formData.get("file") as File;
 
@@ -63,6 +50,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[Upload API Error]", error);
     return NextResponse.json(
       {

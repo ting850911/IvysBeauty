@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@ivysbeauty/database";
+import { requireOwner } from "@/lib/auth-session";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const role = req.headers.get('x-user-role');
-    if (role !== 'OWNER') {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const { id } = await params;
     const location = await prisma.location.findUnique({
@@ -19,6 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ success: true, data: location });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[Location Fetch Error]", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
@@ -26,10 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const role = req.headers.get('x-user-role');
-    if (role !== 'OWNER') {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const { id } = await params;
     const body = await req.json();
@@ -47,6 +43,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ success: true, location });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[Location Update Error]", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
@@ -54,10 +51,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const role = req.headers.get('x-user-role');
-    if (role !== 'OWNER') {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const { id } = await params;
 
@@ -67,6 +61,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[Location Delete Error]", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
