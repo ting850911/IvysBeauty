@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
+import { requireOwner } from "@/lib/auth-session";
 import { prisma } from "@ivysbeauty/database";
 
 // GET /api/admin/portfolio
 export async function GET(req: Request) {
   try {
-    const role = req.headers.get("x-user-role");
-    
-    if (role !== "OWNER") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const portfolios = await prisma.portfolio.findMany({
       orderBy: { createdAt: "desc" },
@@ -19,7 +16,8 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json({ success: true, data: portfolios });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Fetch portfolios error:", error);
     return NextResponse.json({ success: false, error: "Failed to fetch portfolios" }, { status: 500 });
   }
@@ -28,11 +26,7 @@ export async function GET(req: Request) {
 // POST /api/admin/portfolio
 export async function POST(req: Request) {
   try {
-    const role = req.headers.get("x-user-role");
-    
-    if (role !== "OWNER") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const data = await req.json();
     const { title, imageUrls, description, gender, locationId, serviceId, tags } = data;
@@ -59,6 +53,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, data: newPortfolio });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Create portfolio error:", error);
     return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to create portfolio" }, { status: 500 });
   }

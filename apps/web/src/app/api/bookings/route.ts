@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decryptField, encryptField, prisma } from "@ivysbeauty/database";
+import { prisma } from "@ivysbeauty/database";
 import { CreateBookingSchema } from "@ivysbeauty/shared";
 import { addDays, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+import { requireUser } from "@/lib/auth-session";
 
 export async function POST(req: NextRequest) {
   try {
+    const user = await requireUser();
     const body = await req.json();
     
     // 透過 Zod Schema 強制防堵不合法的輸入
@@ -17,7 +20,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { locationId, serviceId, customerId, startTime, notes } = validation.data;
+    const { locationId, serviceId, startTime, notes } = validation.data;
     
     // 檢查 Service 長度
     const service = await prisma.service.findUnique({ where: { id: serviceId } });
@@ -61,14 +64,23 @@ export async function POST(req: NextRequest) {
 
     // 設定到店付款期限 (預防佔用)
     const expiredAt = addDays(new Date(), 1);
+    
+    const timeZoneId = "Asia/Taipei";
+    const localDate = formatInTimeZone(startDateTime, timeZoneId, "yyyy-MM-dd");
+    const localStartTime = formatInTimeZone(startDateTime, timeZoneId, "HH:mm");
+    const localEndTime = formatInTimeZone(endDateTime, timeZoneId, "HH:mm");
 
     const booking = await prisma.booking.create({
       data: {
         locationId,
         serviceId,
-        customerId,
+        customerId: user.id, // Trust session context only
         startTime: startDateTime,
         endTime: endDateTime,
+        localDate,
+        localStartTime,
+        localEndTime,
+        timeZoneId,
         expiredAt,
         notes,
         status: "PENDING"
@@ -80,7 +92,10 @@ export async function POST(req: NextRequest) {
       data: booking,
     });
 
-  } catch (err) {
+  } catch (err: any) {
+    if (err.message === "Unauthorized") {
+      return NextResponse.json({ success: false, error: { code: "UNAUTHORIZED", message: "請先登入" } }, { status: 401 });
+    }
     console.error("Booking Create error:", err);
     return NextResponse.json({ success: false, error: { code: "INTERNAL_ERROR", message: "預約建立失敗" } }, { status: 500 });
   }

@@ -9,22 +9,25 @@ import { getSafeRedirectPath } from "@/lib/auth-helpers";
 export function CompleteProfileForm() {
   const { user, updateUser } = useAuth();
   const router = useRouter();
+  const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [birthday, setBirthday] = useState(user?.birthday || "");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !birthday) return;
+    if (!name || !phone || !birthday) return;
 
     setIsLoading(true);
+    setErrorMsg("");
 
     try {
-      const res = await fetch("/api/auth", {
+      const res = await fetch("/api/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: user?.email,
+          name,
           phone,
           birthday
         }),
@@ -36,19 +39,20 @@ export function CompleteProfileForm() {
         throw new Error(data.error?.message || "更新失敗");
       }
 
-      updateUser({ phone, birthday });
+      updateUser({ name, phone, birthday });
 
-      // Handle redirect after completion (對齊 proxy.md 第 89 點)
       const params = new URLSearchParams(window.location.search);
       const rawRedirect = params.get("redirect");
       const safeRedirect = getSafeRedirectPath(rawRedirect);
 
-      // 如果有跳轉參數且不是為了補資料才來的 (即目標不是 /booking)，則導向目標
-      if (safeRedirect !== "/" && !safeRedirect.startsWith("/booking")) {
+      if (safeRedirect !== "/" && !safeRedirect.startsWith("/complete-profile")) {
         router.push(safeRedirect);
+      } else {
+        router.push("/");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErrorMsg(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -65,10 +69,23 @@ export function CompleteProfileForm() {
       <div className="text-center space-y-2 mb-8">
         <p className="text-eyebrow">Profile Completion</p>
         <h5>完善會員資料</h5>
-        <p>為了後續能收到通知，請提供以下資訊。</p>
+        <p>為了後續能收到通知與稱呼您，請提供以下資訊。</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {errorMsg && <div className="text-red-500 text-sm text-center">{errorMsg}</div>}
+        <div className="space-y-1">
+          <label className="text-xs font-bold tracking-wide text-foreground">稱呼</label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-foreground"
+            placeholder="王小明"
+          />
+        </div>
+
         <div className="space-y-1">
           <label className="text-xs font-bold tracking-wide text-foreground">手機</label>
           <input
@@ -76,7 +93,7 @@ export function CompleteProfileForm() {
             required
             value={phone}
             onChange={e => setPhone(e.target.value)}
-            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-foreground"
             placeholder="0912345678"
           />
         </div>
@@ -93,7 +110,7 @@ export function CompleteProfileForm() {
         </div>
 
         <Button type="submit" className="w-full mt-6" size="lg" disabled={isLoading}>
-          繼續
+          完成
         </Button>
       </form>
     </div>

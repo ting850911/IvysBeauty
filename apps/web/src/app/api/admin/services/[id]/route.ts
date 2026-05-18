@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@ivysbeauty/database";
-import { verifyAuth } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth-session";
 
 // PUT /api/admin/services/[id]
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const auth = await verifyAuth(req);
-    if (!auth || auth.role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireOwner();
 
     const { id } = await params;
     const data = await req.json();
@@ -33,7 +30,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     });
 
     return NextResponse.json(updatedService);
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Update service error:", error);
     return NextResponse.json({ error: "Failed to update service" }, { status: 500 });
   }
@@ -42,10 +40,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 // DELETE /api/admin/services/[id]
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const auth = await verifyAuth(req);
-    if (!auth || auth.role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireOwner();
 
     const { id } = await params;
 
@@ -54,7 +49,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Delete service error:", error);
     return NextResponse.json({ error: "Failed to delete service" }, { status: 500 });
   }

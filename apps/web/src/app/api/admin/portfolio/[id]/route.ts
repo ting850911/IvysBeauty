@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
+import { requireOwner } from "@/lib/auth-session";
 import { prisma } from "@ivysbeauty/database";
 
 // PUT /api/admin/portfolio/[id]
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const role = req.headers.get("x-user-role");
-    
-    if (role !== "OWNER") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const { id } = await params;
     const data = await req.json();
@@ -37,6 +34,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return NextResponse.json({ success: true, data: updatedPortfolio });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Update portfolio error:", error);
     return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to update portfolio" }, { status: 500 });
   }
@@ -45,11 +43,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 // DELETE /api/admin/portfolio/[id]
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const role = req.headers.get("x-user-role");
-    
-    if (role !== "OWNER") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const { id } = await params;
 
@@ -59,6 +53,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Delete portfolio error:", error);
     return NextResponse.json({ success: false, error: error?.message || String(error) || "Failed to delete portfolio" }, { status: 500 });
   }

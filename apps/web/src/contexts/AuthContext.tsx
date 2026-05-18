@@ -2,81 +2,63 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, maskPhone } from "@ivysbeauty/shared";
+import { useRouter, usePathname } from "next/navigation";
 
 export interface AuthContextType {
   user: User | null;
-  token: string | null;
   isInitializing: boolean;
-  login: (token: string, userData: User) => void;
   updateUser: (data: Partial<User>) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
-
 const clearSession = () => {
-  localStorage.removeItem("jwt_token");
-  localStorage.removeItem("user_data");
-  localStorage.removeItem("jwt_expires");
   sessionStorage.removeItem("booking_draft");
   sessionStorage.removeItem("booking_step");
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Hydrate state from localStorage when the app boots
   useEffect(() => {
-    const storedToken = localStorage.getItem("jwt_token");
-    const storedUser = localStorage.getItem("user_data");
-    const storedExpires = localStorage.getItem("jwt_expires");
-
-    if (storedToken && storedUser && storedExpires) {
-      if (Date.now() > parseInt(storedExpires, 10)) {
-        clearSession();
-      } else {
-        try {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-        } catch (err) {
-          console.error("Local storage sync error", err);
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/me");
+        if (res.ok) {
+          const { data } = await res.json();
+          if (data.user) {
+            setUser({
+              ...data.user,
+              phone: data.user.phone ? maskPhone(data.user.phone) : null
+            });
+          } else {
+            setUser(null);
+          }
         }
+      } catch (err) {
+        console.error("Failed to fetch user session", err);
+      } finally {
+        setIsInitializing(false);
       }
-    }
+    };
 
-    setIsInitializing(false);
-
-    // Interval to monitor JWT token expiration
-    const interval = setInterval(() => {
-      const exp = localStorage.getItem("jwt_expires");
-      if (exp && Date.now() > parseInt(exp, 10)) {
-        clearSession();
-        setToken(null);
-        setUser(null);
-        window.location.reload();
-      }
-    }, 60000);
-
-    return () => clearInterval(interval);
+    fetchUser();
   }, []);
 
-  const login = (newToken: string, userData: User) => {
-    setToken(newToken);
-    const maskedUser = { ...userData, phone: maskPhone(userData.phone) };
-    setUser(maskedUser);
-
-    const isOwner = userData.role === "OWNER";
-    const expiresInMs = isOwner ? 24 * 60 * 60 * 1000 : 30 * 60 * 1000;
-    const expiresAt = Date.now() + expiresInMs;
-
-    localStorage.setItem("jwt_token", newToken);
-    localStorage.setItem("jwt_expires", expiresAt.toString());
-    localStorage.setItem("user_data", JSON.stringify(maskedUser));
-  };
+  // Profile completion gating
+  useEffect(() => {
+    if (!isInitializing && user) {
+      const isMissingProfile = !user.name || !user.phone || !user.birthday;
+      // Skip API routes and the complete-profile page itself
+      if (isMissingProfile && pathname !== "/complete-profile" && !pathname.startsWith("/api/")) {
+        router.push(`/complete-profile?redirect=${encodeURIComponent(pathname)}`);
+      }
+    }
+  }, [user, isInitializing, pathname, router]);
 
   const updateUser = (data: Partial<User>) => {
     setUser((prev) => {
@@ -85,28 +67,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.phone) {
         maskedData.phone = maskPhone(data.phone);
       }
-      const updatedUser = { ...prev, ...maskedData };
-      localStorage.setItem("user_data", JSON.stringify(updatedUser));
-      return updatedUser;
+      return { ...prev, ...maskedData };
     });
   };
 
   const logout = async () => {
     try {
-      await fetch("/api/auth", { method: "DELETE" });
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const data = await res.json();
+      
+      setUser(null);
+      clearSession();
+
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        router.push("/login");
+      }
     } catch (e) {
       console.error(e);
+      setUser(null);
+      clearSession();
+      router.push("/login");
     }
-    setToken(null);
-    setUser(null);
-    clearSession();
-    window.location.href = "/";
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, token, isInitializing, login, updateUser, logout }}
-    >
+    <AuthContext.Provider value={{ user, isInitializing, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

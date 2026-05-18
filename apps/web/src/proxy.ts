@@ -1,4 +1,3 @@
-import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
 import { getSafeRedirectPath } from "./lib/auth-helpers";
 
@@ -8,7 +7,7 @@ const PROTECTED_APIS = ["/api/history", "/api/bookings", "/api/admin"];
 
 export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
-  const token = req.cookies.get("auth_token")?.value;
+  const token = req.cookies.get("ivys_session")?.value;
 
   const isProtectedPage = PROTECTED_PAGES.some((p) => pathname.startsWith(p));
   const isProtectedApi = PROTECTED_APIS.some((p) => pathname.startsWith(p));
@@ -38,67 +37,29 @@ export async function proxy(req: NextRequest) {
     
     const res = NextResponse.redirect(url);
     // 只有在明確過期時才清除 cookie
-    if (expired) res.cookies.delete("auth_token");
+    if (expired) res.cookies.delete("ivys_session");
     return res;
   };
 
-  // ==== 1. 預先驗證 Token ====
-  let payload: any = null;
-  if (token) {
-    try {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (!jwtSecret) {
-        console.error("[Proxy] CRITICAL: JWT_SECRET is missing");
-        return deny(true);
-      }
-      const secret = new TextEncoder().encode(jwtSecret);
-      const { payload: verifiedPayload } = await jwtVerify(token, secret);
-      payload = verifiedPayload;
-    } catch (err) {
-      console.log("[Proxy] Token invalid or expired:", pathname);
-    }
-  }
-
-  // ==== 2. 登入頁面處理 (對齊 proxy.md 第 136 點) ====
+  // ==== 1. 登入頁面處理 ====
   if (isLoginPage) {
-    // 已登入且 Token 有效者進入 /login -> 導回首頁 (禁止直接在 /login 清 token)
-    if (payload) {
+    if (token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    // 未登入或 Token 無效者，清除無效 cookie 並放行進入登入頁
-    const res = NextResponse.next();
-    if (token && !payload) res.cookies.delete("auth_token");
-    return res;
+    return NextResponse.next();
   }
 
-  // ==== 3. 存取權限檢查 ====
+  // ==== 2. 存取權限檢查 ====
   if (isProtectedPage || isProtectedApi) {
-    // 3a. 未登入或 Token 無效
-    if (!payload) {
-      return deny(!!token); // 有 token 但驗證失敗視為過期
+    // 2a. 未登入
+    if (!token) {
+      return deny();
     }
 
-    // 3b. Admin 權限檢查 (對齊 proxy.md 第 31, 32 點)
-    if (isAdminPath && payload.role !== "OWNER") {
-      console.log(`[Proxy] Access denied for user ${payload.email}: insufficient role`);
-      
-      // API 回傳 403 Forbidden
-      if (isProtectedApi) {
-        return NextResponse.json(
-          { success: false, error: { code: "FORBIDDEN", message: "權限不足" } },
-          { status: 403 }
-        );
-      }
-      // 頁面重導向至首頁
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    // 2b. Admin 權限檢查 - 由於 middleware 無法直接讀取 DB，將 isAdmin 判斷延後至 Server Action 或 API 或 Layout (AuthContext)
+    // 這裡只先檢查 isAdminPath 並假設有 token 才能進去，實際攔截由 AuthContext / API 處理
 
-    // 3c. 驗證成功，將身分寫入 Header 並放行
-    const requestHeaders = new Headers(req.headers);
-    if (payload.sub) requestHeaders.set("x-user-id", String(payload.sub));
-    if (payload.role) requestHeaders.set("x-user-role", String(payload.role));
-
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    return NextResponse.next();
   }
 
   // 非受保護路徑 -> 放行

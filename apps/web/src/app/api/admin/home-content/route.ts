@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireOwner } from "@/lib/auth-session";
 import { prisma } from "@ivysbeauty/database";
 
 export async function PUT(req: Request) {
   try {
-    const role = req.headers.get('x-user-role');
-    if (role !== 'OWNER') {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const body = await req.json();
     const { hero, about, notice } = body;
@@ -25,6 +23,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json({ success: true, data: homeContent });
   } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[HomeContent Update Error]", error);
     return NextResponse.json({ success: false, error: "Failed to update home content" }, { status: 500 });
   }
@@ -32,14 +31,12 @@ export async function PUT(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const role = req.headers.get('x-user-role');
-    if (role !== 'OWNER') {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    await requireOwner();
 
     const content = await prisma.homeContent.findFirst();
     return NextResponse.json({ success: true, data: content });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("[HomeContent Fetch Error]", error);
     return NextResponse.json({ success: false, error: "Failed to fetch home content" }, { status: 500 });
   }

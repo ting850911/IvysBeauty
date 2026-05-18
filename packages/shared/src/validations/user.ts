@@ -43,7 +43,7 @@ export const AuthPayloadSchema = z
   });
 
 export const UpdateProfileSchema = z.object({
-  email: z.string().email(),
+  name: z.string().min(1, { message: '請輸入您的稱呼' }),
   phone: phoneSchema,
   birthday: birthdaySchema,
 });

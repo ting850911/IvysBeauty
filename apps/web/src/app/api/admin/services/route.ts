@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@ivysbeauty/database";
-import { verifyAuth } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth-session";
 
 // GET /api/admin/services
 export async function GET(req: Request) {
   try {
-    const auth = await verifyAuth(req);
-    if (!auth || auth.role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireOwner();
 
     const services = await prisma.service.findMany({
       orderBy: { createdAt: "desc" },
@@ -18,7 +15,8 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json(services);
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Fetch services error:", error);
     return NextResponse.json({ error: "Failed to fetch services" }, { status: 500 });
   }
@@ -27,10 +25,7 @@ export async function GET(req: Request) {
 // POST /api/admin/services
 export async function POST(req: Request) {
   try {
-    const auth = await verifyAuth(req);
-    if (!auth || auth.role !== "OWNER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireOwner();
 
     const data = await req.json();
     const { name, price, duration, isPublished, locationIds } = data;
@@ -55,7 +50,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(newService);
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "Forbidden" || error.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Create service error:", error);
     return NextResponse.json({ error: "Failed to create service" }, { status: 500 });
   }

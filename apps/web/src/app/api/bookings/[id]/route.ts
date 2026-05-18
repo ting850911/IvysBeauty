@@ -42,7 +42,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
 
     return NextResponse.json({ success: true, data: updatedBooking });
-  } catch (err) {
+  } catch (err: any) {
+    if (err.message === "Forbidden" || err.message === "Unauthorized") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     console.error("Update booking status error:", err);
     return NextResponse.json({ success: false, error: { message: "更新預約狀態失敗" } }, { status: 500 });
   }
